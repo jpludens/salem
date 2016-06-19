@@ -1,1 +1,1 @@
-web: gunicorn adaptive_tactics:app --log-file=-
+web: gunicorn salem:app --log-file=-
