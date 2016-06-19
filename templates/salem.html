@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="salemApp">
 <head>
-    <!-- Affinity symbols copyright Firaxis. Image files obtained from civilization.wikia.com, used without alteration,
-    under the CC-BY-SA license. https://creativecommons.org/licenses/by-sa/2.0/ -->
     <title>Salem</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/salemObjects.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
 </head>
-<body>Hello, world!</body>
+<body>
+	<div ng-controller="mainCtrl">
+		<div class="column">
+			<h3>Roles</h3>
+			<p ng-repeat="role in roles" ng-class="role.displayClass">
+				{[role.name]}
+			</p>
+		</div>
+		<div class="column">
+			<h3>Alignments</h3>
+			<p ng-repeat="alignment in alignments">
+				{[alignment.team]} {[alignment.category]}
+			</p>
+		</div>
+	</div>
+</body>
 </html>
 

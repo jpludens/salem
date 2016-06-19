@@ -1,0 +1,16 @@
+.column {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.town { color: #45BF00; }
+.mafia { color: #DD0000; }
+.amne { color: #4FF0E8; }
+.arso { color: #EE7600; }
+.exe { color: #ACACAC; }
+.jest { color: #F49FD0; }
+.sk { color: #000080; }
+.surv { color: #C8C800; }
+.vamp { color: #7B8867; }
+.ww { color: #744A26; }
+.witch { color: #BF5FFF; }
