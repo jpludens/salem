@@ -3,14 +3,20 @@
 	vertical-align: top;
 }
 
-.town { color: #45BF00; }
-.mafia { color: #DD0000; }
-.amne { color: #4FF0E8; }
-.arso { color: #EE7600; }
-.exe { color: #ACACAC; }
-.jest { color: #F49FD0; }
-.sk { color: #000080; }
-.surv { color: #C8C800; }
-.vamp { color: #7B8867; }
-.ww { color: #744A26; }
-.witch { color: #BF5FFF; }
+.selected {
+	border: 2px solid black;
+}
+
+.textColorCategory {color: #49A9D0;}
+.textColorTown { color: #45BF00; }
+.textColorMafia { color: #DD0000; }
+.textColorNeutral {color: #ACACAC;}
+.textColorAmne { color: #4FF0E8; }
+.textColorArso { color: #EE7600; }
+.textColorExe { color: #ACACAC; }
+.textColorJest { color: #F49FD0; }
+.textColorSk { color: #000080; }
+.textColorSurv { color: #C8C800; }
+.textColorVamp { color: #7B8867; }
+.textColorWw { color: #744A26; }
+.textColorWitch { color: #BF5FFF; }
