@@ -4,22 +4,39 @@
     <title>Salem</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/salemObjects.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/services.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/directives.js') }}"></script>
 </head>
 <body>
 	<div ng-controller="mainCtrl">
 		<div class="column">
 			<h3>Roles</h3>
-			<p ng-repeat="role in roles" ng-class="role.displayClass">
-				{[role.name]}
-			</p>
+			<div ng-repeat="(key, role) in roles"
+			ng-class="(role == selectedRole) ? 'selected' : ''"
+			ng-click="selectRole(role)">
+				<p role=""></p>
+			</div>
 		</div>
 		<div class="column">
 			<h3>Alignments</h3>
-			<p ng-repeat="alignment in alignments">
-				{[alignment.team]} {[alignment.category]}
+			<div ng-repeat="(key, alignment) in alignments"
+			ng-class="(alignment == selectedAlignment) ? 'selected' : ''"
+			ng-click="selectAlignment(alignment)">
+				<p alignment=""></p>
+			</div>
+		</div>
+		<div class="column">
+			<h3>Match?</h3>
+			<p>{[selectedRole.name]}</p>
+			<p role=""></p>
+			<p ng-show="roleMatchesAlignment(selectedRole, selectedAlignment)">
+				MATCHES
 			</p>
+			<p ng-hide="roleMatchesAlignment(selectedRole, selectedAlignment)">
+				DOES NOT MATCH
+			</p>
+			<p>{[selectedAlignment.team]} {[selectedAlignment.category]}</p>
 		</div>
 	</div>
 </body>
