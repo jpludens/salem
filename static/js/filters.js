@@ -2,6 +2,7 @@
 
 app = angular.module("salemApp");
 
+// DEPRECATED
 app.filter('descSpec', function() {
 	return function(input, specificities) {
 		results = []
@@ -12,6 +13,54 @@ app.filter('descSpec', function() {
 				}	
 			}
 			
+		}
+		return results;
+	}
+});
+
+app.filter('restrictTo', function() {
+	return function(input, restriction) {
+		if (restriction == null) {
+			return input;
+		}
+		
+		var results = [];
+		// Restrict to roles: return only descriptions
+		// with specifity of 3.
+		if (restriction == "roles") {
+			for (var i = 0; i < input.length; i++) {
+				if (input[i].specificity == 3) {
+					results.push(input[i]);
+				}			
+			}
+		}
+		// Restrict to alignments: return only descriptions
+		// with specifity under 3 (Any, Random $Team, Team $Category)
+		else if (restriction == "alignments") {
+			for (var i = 0; i < input.length; i++) {
+				if (input[i].specificity < 3) {
+					results.push(input[i]);
+				}			
+			}
+		}
+		else {
+			results = input;
+		}
+		return results;
+	}
+});
+
+app.filter('teamOnly', function() {
+	return function(input, team) {
+		if (team == null) {
+			return input;
+		}
+
+		results = []
+		for (var i = 0; i < input.length; i++) {
+			if (input[i].team == team) {
+				results.push(input[i]);
+			}			
 		}
 		return results;
 	}
