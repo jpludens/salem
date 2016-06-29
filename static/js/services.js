@@ -2,141 +2,114 @@
 
 app = angular.module("salemApp");
 
-// Create the alignments used in the role list 
-app.factory('alignmentsFactory', function() {
-	return function() {
-		function Alignment (team, category) {
-			this.team = team;
-			this.category = category;
-		}
-
-		var TWN = 'Town';
-		var MAF = 'Mafia';
-		var NEU = 'Neutral';
-		var PRO = 'Protective';
-		var SUP = 'Support';
-		var INV = 'Investigative';
-		var KIL = 'Killing';
-		var DEC = 'Deception';
-		var BEN = 'Benign';
-		var EVL = 'Evil';
-		var CHA = 'Chaos';
-		var RAN = 'Random';
-		
-		var alignments = {
-			// More specific alignments
-			TWNPRO : new Alignment(TWN, PRO),
-			TWNSUP : new Alignment(TWN, SUP),
-			TWNINV : new Alignment(TWN, INV),
-			TWNKIL : new Alignment(TWN, KIL),
-			MAFKIL : new Alignment(MAF, KIL),
-			MAFDEC : new Alignment(MAF, DEC),
-			MAFSUP : new Alignment(MAF, SUP),
-			NEUKIL : new Alignment(NEU, KIL),
-			NEUEVL : new Alignment(NEU, EVL),
-			NEUBEN : new Alignment(NEU, BEN),
-			NEUCHA : new Alignment(NEU, CHA),
-			// Less specific alignments
-			TWNRAN : new Alignment(TWN, RAN),
-			MAFRAN : new Alignment(MAF, RAN),
-			NEURAN : new Alignment(NEU, RAN),
-			// Least specific alignment
-			ANY : new Alignment('Any')
-		};
-
-		return alignments;
-	};
-});
-
-// Create the roles using their names and specific alignments.
-app.factory('rolesFactory', function(alignmentsFactory) {
+// Create various roles and alignments use to describe players and abilities
+app.factory('roleDescsFactory', function() {
 	return function() {
 
-		function Role (name, alignment, unique) {
-			this.name = name;
-			this.team = alignment.team;
-			this.category = alignment.category;
-			this.unique = unique ? true : false;
-
-			
-			var base = 'textColor';
-			if (this.team == 'Neutral') {
-				if (this.name == 'Amnesiac') {
-					this.textColor = base + 'Amne';
-				}
-				else if (this.name == 'Arsonist') {
-					this.textColor = base + 'Arso';
-				}
-				else if (this.name == 'Excecutioner') {
-					this.textColor = base + 'Exe';
-				}
-				else if (this.name == 'Jester') {
-					this.textColor = base + 'Jest';
-				}
-				else if (this.name == 'Serial Killer') {
-					this.textColor = base + 'Sk';
-				}
-				else if (this.name == 'Survivor') {
-					this.textColor = base + 'Surv';
-				}
-				else if (this.name == 'Vampire') {
-					this.textColor = base + 'Vamp';
-				}
-				else if (this.name == 'Werewolf') {
-					this.textColor = base + 'Ww';
-				}
-				else if (this.name == 'Witch') {
-					this.textColor = base + 'Witch';
-				}
+		function  RoleDesc (team, category, name, unique) {
+			if (team == undefined) {
+				this.team = null;
+				this.category = null;
+				this.name = null;
+				this.unique = false;
+				this.specificity = 0;
+			}
+			else if (category == undefined){
+				this.team = team;
+				this.category = null;
+				this.name = null;
+				this.unique = false;
+				this.specificity = 1;
+			}
+			else if (name == undefined){
+				this.team = team;
+				this.category = category;
+				this.name = null;
+				this.unique = false;
+				this.specificity = 2;
 			}
 			else {
-				this.textColor = base + this.team;
+				this.team = team;
+				this.category = category;
+				this.name = name;
+				this.unique = unique || false;
+				this.specificity = 3;
 			}
-
-			// Couldn't get equality comparisons to work between
-			// equal alignments objects and this property...
-			// Not sure why, but also not sure the property can be useful.
-			// this.alignment = alignment;
 		}
 
-		var alignments = alignmentsFactory();
+		RoleDesc.prototype.match = function(other) {
+			if (other == undefined) {
+				return false;
+			}
+			var spec = Math.min(this.specificity, other.specificity);
+			if (spec == 0) {
+				return true;
+			}
+			else if (spec == 1) {
+				return this.team == other.team
+			}
+			else if (spec == 2) {
+				return this.team == other.team &&
+				    this.category == other.category;
+			}
+			else if (spec == 3) {
+				return this.text == other.text
+			}
+		}
 		
-		var roles = {
-			bodyguard : new Role('Bodyguard', alignments.TWNPRO),
-			doctor : new Role('Doctor', alignments.TWNPRO),
-			escort : new Role('Escort', alignments.TWNSUP),
-			jailor : new Role('Jailor', alignments.TWNKIL, true),
-			lookout : new Role('Lookout', alignments.TWNINV),
-			mayor : new Role('Mayor', alignments.TWNSUP, true),
-			medium : new Role('Medium', alignments.TWNSUP),
-			retributionist : new Role(
-				'Retributionist', alignments.TWNSUP, true),
-			sheriff : new Role('Sheriff', alignments.TWNINV),
-			spy : new Role('Spy', alignments.TWNINV),
-			transporter : new Role('Transporter', alignments.TWNSUP),
-			vampireHunter : new Role('Vampire Hunter', alignments.TWNKIL),
-			veteran : new Role('Veteran', alignments.TWNKIL, true),
-			vigilante : new Role('Vigilante', alignments.TWNKIL),
-			blackmailer : new Role('Blackmailer', alignments.MAFSUP),
-			consigliere : new Role('Consigliere', alignments.MAFSUP),
-			consort : new Role('Consort', alignments.MAFSUP),
-			disguiser : new Role('Disguiser', alignments.MAFDEC),
-			forger : new Role('Forger', alignments.MAFDEC),
-			framer : new Role('Framer', alignments.MAFDEC),
-			godfather : new Role('Godfather', alignments.MAFKIL, true),
-			janitor : new Role('Janitor', alignments.MAFDEC),
-			mafioso : new Role('Mafioso', alignments.MAFKIL, true),
-			amnesiac : new Role('Amnesiac', alignments.NEUBEN),
-			arsonist : new Role('Arsonist', alignments.NEUKIL),
-			executioner : new Role('Executioner', alignments.NEUEVL),
-			jester : new Role('Jester', alignments.NEUEVL),
-			serialKiller : new Role('Serial Killer', alignments.NEUKIL),
-			survivor : new Role('Survivor', alignments.NEUBEN),
-			vampire : new Role('Vampire', alignments.NEUCHA),
-			werewolf : new Role('Werewolf', alignments.NEUKIL, true),
-			witch : new Role('Witch', alignments.NEUEVL)
-		};
+		var descs = [];
+		// Specificity 0 (Any)
+		descs.push(new RoleDesc())
+		// Specificity 1 (Random)
+		descs.push(new RoleDesc('Town'))
+		descs.push(new RoleDesc('Mafia'))
+		descs.push(new RoleDesc('Neutral'))
+		// Specificty 2 (Alignment)
+		descs.push(new RoleDesc('Town', 'Protective'))
+		descs.push(new RoleDesc('Town', 'Support'))
+		descs.push(new RoleDesc('Town', 'Investigative'))
+		descs.push(new RoleDesc('Town', 'Killing'))
+		descs.push(new RoleDesc('Mafia', 'Killing'))
+		descs.push(new RoleDesc('Mafia', 'Deception'))
+		descs.push(new RoleDesc('Mafia', 'Support'))
+		descs.push(new RoleDesc('Neutral', 'Killing'))
+		descs.push(new RoleDesc('Neutral', 'Evil'))
+		descs.push(new RoleDesc('Neutral', 'Benign'))
+		descs.push(new RoleDesc('Neutral', 'Chaos'))
+		// Specificty 3 (Role)
+		descs.push(new RoleDesc('Town', 'Protective', 'Bodyguard'))
+		descs.push(new RoleDesc('Town', 'Protective', 'Doctor'))
+		descs.push(new RoleDesc('Town', 'Support', 'Escort'))
+		descs.push(new RoleDesc('Town', 'Support', 'Mayor', true))
+		descs.push(new RoleDesc('Town', 'Support', 'Medium'))
+		descs.push(new RoleDesc('Town', 'Support', 'Retributionist', true))
+		descs.push(new RoleDesc('Town', 'Support', 'Transporter'))
+		descs.push(new RoleDesc('Town', 'Investigative', 'Lookout'))
+		descs.push(new RoleDesc('Town', 'Investigative', 'Sheriff'))
+		descs.push(new RoleDesc('Town', 'Investigative', 'Spy'))
+		descs.push(new RoleDesc('Town', 'Killing', 'Jailor', true))
+		descs.push(new RoleDesc('Town', 'Killing', 'Vampire Hunter'))
+		descs.push(new RoleDesc('Town', 'Killing', 'Veteran', true))
+		descs.push(new RoleDesc('Town', 'Killing', 'Vigilante'))
+		descs.push(new RoleDesc('Mafia', 'Killing', 'Godfather', true))
+		descs.push(new RoleDesc('Mafia', 'Killing', 'Mafioso', true))
+		descs.push(new RoleDesc('Mafia', 'Deception', 'Disguiser'))
+		descs.push(new RoleDesc('Mafia', 'Deception', 'Forger'))
+		descs.push(new RoleDesc('Mafia', 'Deception', 'Framer'))
+		descs.push(new RoleDesc('Mafia', 'Deception', 'Janitor'))
+		descs.push(new RoleDesc('Mafia', 'Support', 'Blackmailer'))
+		descs.push(new RoleDesc('Mafia', 'Support', 'Consigliere'))
+		descs.push(new RoleDesc('Mafia', 'Support', 'Consort'))
+		descs.push(new RoleDesc('Neutral', 'Killing', 'Arsonist'))
+		descs.push(new RoleDesc('Neutral', 'Killing', 'Serial Killer'))
+		descs.push(new RoleDesc('Neutral', 'Killing', 'Werewolf', true))
+		descs.push(new RoleDesc('Neutral', 'Evil', 'Executioner'))
+		descs.push(new RoleDesc('Neutral', 'Evil', 'Jester'))
+		descs.push(new RoleDesc('Neutral', 'Evil', 'Witch'))
+		descs.push(new RoleDesc('Neutral', 'Benign', 'Amnesiac'))
+		descs.push(new RoleDesc('Neutral', 'Benign', 'Survivor'))
+		descs.push(new RoleDesc('Neutral', 'Chaos', 'Vampire'))
 
-		return roles
-	};
+		return descs;
+	}
 });

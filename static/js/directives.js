@@ -6,44 +6,44 @@ app.directive("role", function () {
 	return {
 		scope: '@',
 		link: function (scope, elem, attrs) {
-			elem.text(scope.role.name);
-			elem.addClass(scope.role.textColor);
-		}
-	}
-});
-
-app.directive("alignment", function () {
-	return {
-		scope: '@',
-		link: function (scope, elem, attrs) {
-			var team = scope.alignment.team;
-			var teamSpan = angular.element("<span></span");
-			teamSpan.text(team);
-			teamSpan.addClass('textColor' + team);
-
-			if (team == 'Any') {
-				elem.append(teamSpan)
+			if (scope.roleDesc == undefined) {
+				return;
+			}
+			if (scope.roleDesc.specificity == 3) {
+				if (scope.roleDesc.team == 'Neutral') {
+					var classMod =
+						scope.roleDesc.name.toLowerCase().replace(" ", "-")
+				}
+				else {
+					var classMod = scope.roleDesc.team.toLowerCase();
+				}
+				elem.text(scope.roleDesc.name);
+				elem.addClass("role-text--" + classMod);
+			}
+			else if (scope.roleDesc.specificity == 0) {
+				elem.text("Any");
 			}
 			else {
-				var category = scope.alignment.category;
-				var catSpan = angular.element("<span></span");
-				catSpan.text(category);
-				catSpan.addClass('textColorCategory');
+				var teamSpan = angular.element("<span></span>");
+				teamSpan.text(scope.roleDesc.team);
+				teamSpan.addClass("role-text--" +
+					scope.roleDesc.team.toLowerCase());
 
-				spaceSpan = angular.element("<span>&nbsp</span>");
+				var catSpan = angular.element("<span></span>");
+				catSpan.text(scope.roleDesc.category || "Random");
+				catSpan.addClass("role-text--category");
 
-				if (category == 'Random') {
+				if (scope.roleDesc.specificity == 1) {
 					elem.append(catSpan);
-					elem.append(spaceSpan);
+					elem.append("&nbsp;");
 					elem.append(teamSpan);
 				}
 				else {
 					elem.append(teamSpan);
-					elem.append(spaceSpan);
-					elem.append(catSpan);					
+					elem.append("&nbsp;");
+					elem.append(catSpan);
 				}
 			}
 		}
 	}
 });
-

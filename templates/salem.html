@@ -1,39 +1,40 @@
 <!DOCTYPE html>
 <html ng-app="salemApp">
 <head>
-    <title>Salem</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/services.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/directives.js') }}"></script>
+	<title>Salem</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
+	<script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/filters.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/services.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/directives.js') }}"></script>
 </head>
 <body>
 	<div ng-controller="mainCtrl">
 		<div class="column">
 			<h3>Roles</h3>
-			<div ng-repeat="(key, role) in roles"
-			ng-class="(role == selectedRole) ? 'selected' : ''"
-			ng-click="selectRole(role)">
+			<div ng-repeat="roleDesc in descriptions|descSpec:[3]"
+			ng-class="(roleDesc == selectedRole) ? 'selected' : ''"
+			ng-click="selectRole(roleDesc)">
 				<p role=""></p>
 			</div>
 		</div>
 		<div class="column">
 			<h3>Alignments</h3>
-			<div ng-repeat="(key, alignment) in alignments"
-			ng-class="(alignment == selectedAlignment) ? 'selected' : ''"
-			ng-click="selectAlignment(alignment)">
-				<p alignment=""></p>
+			<div ng-repeat="roleDesc in descriptions|descSpec:[0,1,2]:true"
+			ng-class="(roleDesc == selectedAlignment) ? 'selected' : ''"
+			ng-click="selectAlignment(roleDesc)">
+				<p role=""></p>
 			</div>
 		</div>
 		<div class="column">
 			<h3>Match?</h3>
 			<p>{[selectedRole.name]}</p>
-			<p role=""></p>
-			<p ng-show="roleMatchesAlignment(selectedRole, selectedAlignment)">
+			<p roleDesc=""></p>
+			<p ng-show="selectedRole.match(selectedAlignment)">
 				MATCHES
 			</p>
-			<p ng-hide="roleMatchesAlignment(selectedRole, selectedAlignment)">
+			<p ng-hide="selectedRole.match(selectedAlignment)">
 				DOES NOT MATCH
 			</p>
 			<p>{[selectedAlignment.team]} {[selectedAlignment.category]}</p>

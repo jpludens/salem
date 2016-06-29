@@ -7,9 +7,8 @@ app.config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.endSymbol(']}');
 }]);
 
-app.controller("mainCtrl", function ($scope, alignmentsFactory, rolesFactory) {
-	$scope.roles = rolesFactory();
-	$scope.alignments = alignmentsFactory();
+app.controller("mainCtrl", function ($scope, roleDescsFactory) {
+	$scope.descriptions = roleDescsFactory();
 
 	$scope.selectedRole = null;
 	$scope.selectedAlignment = null;

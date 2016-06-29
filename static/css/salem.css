@@ -7,16 +7,42 @@
 	border: 2px solid black;
 }
 
-.textColorCategory {color: #49A9D0;}
-.textColorTown { color: #45BF00; }
-.textColorMafia { color: #DD0000; }
-.textColorNeutral {color: #ACACAC;}
-.textColorAmne { color: #4FF0E8; }
-.textColorArso { color: #EE7600; }
-.textColorExe { color: #ACACAC; }
-.textColorJest { color: #F49FD0; }
-.textColorSk { color: #000080; }
-.textColorSurv { color: #C8C800; }
-.textColorVamp { color: #7B8867; }
-.textColorWw { color: #744A26; }
-.textColorWitch { color: #BF5FFF; }
+.role-text--category {
+	color: #49A9D0;
+}
+.role-text--town {
+	color: #45BF00;
+}
+.role-text--mafia {
+	color: #DD0000;
+}
+.role-text--neutral {
+	color: #ACACAC;
+}
+.role-text--amnesiac {
+	color: #4FF0E8;
+}
+.role-text--arsonist {
+	color: #EE7600;
+}
+.role-text--executioner {
+	color: #ACACAC;
+}
+.role-text--jester {
+	color: #F49FD0;
+}
+.role-text--serial-killer {
+	color: #000080;
+}
+.role-text--survivor {
+	color: #C8C800;
+}
+.role-text--vampire {
+	color: #7B8867;
+}
+.role-text--werewolf {
+	color: #744A26;
+}
+.role-text--witch {
+	color: #BF5FFF;
+}
