@@ -12,7 +12,7 @@ app.filter('descSpec', function() {
 					results.push(input[i]);
 				}	
 			}
-			
+
 		}
 		return results;
 	}
@@ -23,24 +23,24 @@ app.filter('restrictTo', function() {
 		if (restriction == null) {
 			return input;
 		}
-		
+
 		var results = [];
 		// Restrict to roles: return only descriptions
 		// with specifity of 3.
-		if (restriction == "roles") {
+		if (restriction == "Roles") {
 			for (var i = 0; i < input.length; i++) {
 				if (input[i].specificity == 3) {
 					results.push(input[i]);
-				}			
+				}
 			}
 		}
 		// Restrict to alignments: return only descriptions
 		// with specifity under 3 (Any, Random $Team, Team $Category)
-		else if (restriction == "alignments") {
+		else if (restriction == "Alignments") {
 			for (var i = 0; i < input.length; i++) {
 				if (input[i].specificity < 3) {
 					results.push(input[i]);
-				}			
+				}
 			}
 		}
 		else {
@@ -60,7 +60,7 @@ app.filter('teamOnly', function() {
 		for (var i = 0; i < input.length; i++) {
 			if (input[i].team == team) {
 				results.push(input[i]);
-			}			
+			}
 		}
 		return results;
 	}

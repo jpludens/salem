@@ -12,32 +12,21 @@
 <body>
 	<div ng-controller="mainCtrl">
 		<div class="column">
+			<div class="column">
+				<h3>Restrictions</h3>
+				<div class="row" ng-repeat="val in specRestValues">
+					<button type="button" ng-click="updateSpecRest(val)">{[val]}</button>
+				</div>
+				<div class="row" ng-repeat="val in teamRestValues">
+					<button type="button" ng-click="updateTeamRest(val)">{[val]}</button>
+				</div>
+			</div>
 			<h3>Roles</h3>
-			<div ng-repeat="roleDesc in descriptions|descSpec:[3]"
+			<div ng-repeat="roleDesc in descriptions|restrictTo:specRest|teamOnly:teamRest"
 			ng-class="(roleDesc == selectedRole) ? 'selected' : ''"
 			ng-click="selectRole(roleDesc)">
 				<p role=""></p>
 			</div>
-		</div>
-		<div class="column">
-			<h3>Alignments</h3>
-			<div ng-repeat="roleDesc in descriptions|descSpec:[0,1,2]:true"
-			ng-class="(roleDesc == selectedAlignment) ? 'selected' : ''"
-			ng-click="selectAlignment(roleDesc)">
-				<p role=""></p>
-			</div>
-		</div>
-		<div class="column">
-			<h3>Match?</h3>
-			<p>{[selectedRole.name]}</p>
-			<p roleDesc=""></p>
-			<p ng-show="selectedRole.match(selectedAlignment)">
-				MATCHES
-			</p>
-			<p ng-hide="selectedRole.match(selectedAlignment)">
-				DOES NOT MATCH
-			</p>
-			<p>{[selectedAlignment.team]} {[selectedAlignment.category]}</p>
 		</div>
 	</div>
 </body>

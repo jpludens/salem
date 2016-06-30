@@ -3,6 +3,10 @@
 	vertical-align: top;
 }
 
+.row {
+	display: inline;
+}
+
 .selected {
 	border: 2px solid black;
 }
