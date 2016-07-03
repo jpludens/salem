@@ -18,7 +18,7 @@ app.filter('descSpec', function() {
 	}
 });
 
-app.filter('restrictTo', function() {
+app.filter('specOnly', function() {
 	return function(input, restriction) {
 		if (restriction == null) {
 			return input;
