@@ -34,13 +34,15 @@
 				</div>
 			</div>
 			<div class="role-selector--roles">
-				<ul ng-repeat="roleDesc in descriptions|specOnly:specRest|teamOnly:teamRest"
-					ng-class="(roleDesc == selectedRole) ? 'selected' : ''"
-					ng-click="selectRole(roleDesc)">
+				<ul ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest"
+					ng-class="(persona == selectedRole) ? 'selected' : ''"
+					ng-click="selectRole(persona)">
 						<a target="_blank" role=""></a>
 				</ul>
 			</div>
 		</div>
+	</div>
+	<div ng-controller="populationCtrl">
 	</div>
 </body>
 </html>

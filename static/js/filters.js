@@ -56,11 +56,35 @@ app.filter('teamOnly', function() {
 			return input;
 		}
 
-		results = []
+		var results = [];
 		for (var i = 0; i < input.length; i++) {
 			if (input[i].team == team) {
 				results.push(input[i]);
 			}
+		}
+		return results;
+	}
+});
+
+
+// Used so app can do ng-repeat on a filtered iterable,
+// without any OTHER filters needing to worry about
+// whether input is an interable or an array.
+// (This would be trivial for individual filters, but for chained
+// filters, order would matter, as the first would be dealing with
+// an iterable but all others with lists.)
+// TRY CONVERTING OTHER FILTERS TO PURE ITERABLE THOUGH,
+// AND USING NG-REPEAT WITH OF RATHER THAN IN
+app.filter('iterToArray', function() {
+	return function(input) {
+		if (input == null ||
+			! typeof input[Symbol.iterator] === "function") {
+			return input;
+		}
+
+		var results = [];
+		for (let item of input) {
+			results.push(item);
 		}
 		return results;
 	}

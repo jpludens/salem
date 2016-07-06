@@ -6,31 +6,31 @@ app.directive("role", function () {
 	return {
 		scope: '@',
 		link: function (scope, elem, attrs) {
-			if (scope.roleDesc == undefined) {
+			if (scope.persona == undefined) {
 				return;
 			}
 
 			var wikiLinkTemplate = 'http://town-of-salem.wikia.com/wiki/';
 
 			// Handle exact role names
-			if (scope.roleDesc.specificity == 3) {
-				if (scope.roleDesc.team == 'Neutral') {
+			if (scope.persona.specificity == 3) {
+				if (scope.persona.team == 'Neutral') {
 					// Generalized handling of transforming sk name to class
 					var classMod =
-						scope.roleDesc.name.toLowerCase().replace(" ", "-")
+						scope.persona.name.toLowerCase().replace(" ", "-")
 				}
 				else {
-					var classMod = scope.roleDesc.team.toLowerCase();
+					var classMod = scope.persona.team.toLowerCase();
 				}
 				var roleSpan = angular.element("<span></span>");
-				roleSpan.text(scope.roleDesc.name);
+				roleSpan.text(scope.persona.name);
 				roleSpan.addClass("role-text--" + classMod);
 				elem.append(roleSpan);
 				attrs.$set('href', wikiLinkTemplate +
-					scope.roleDesc.name.replace(" ", "_"));
+					scope.persona.name.replace(" ", "_"));
 			}
 			// Handle 'Any'
-			else if (scope.roleDesc.specificity == 0) {
+			else if (scope.persona.specificity == 0) {
 				var roleSpan = angular.element("<span></span>");
 				roleSpan.addClass("role-text--any");
 				roleSpan.text("Any");
@@ -40,20 +40,20 @@ app.directive("role", function () {
 			// Handle 'Random $Team' and '$Team $Category'
 			else {
 				var teamSpan = angular.element("<span></span>");
-				teamSpan.text(scope.roleDesc.team);
+				teamSpan.text(scope.persona.team);
 				teamSpan.addClass("role-text--" +
-					scope.roleDesc.team.toLowerCase());
+					scope.persona.team.toLowerCase());
 
 				var catSpan = angular.element("<span></span>");
-				catSpan.text(scope.roleDesc.category || "Random");
+				catSpan.text(scope.persona.category || "Random");
 				catSpan.addClass("role-text--category");
 
 				// Random $Team
-				if (scope.roleDesc.specificity == 1) {
+				if (scope.persona.specificity == 1) {
 					elem.append(catSpan);
 					elem.append("&nbsp;");
 					elem.append(teamSpan);
-					attrs.$set('href', wikiLinkTemplate + scope.roleDesc.team);
+					attrs.$set('href', wikiLinkTemplate + scope.persona.team);
 				}
 				// $Team $Category
 				else {
@@ -61,7 +61,7 @@ app.directive("role", function () {
 					elem.append("&nbsp;");
 					elem.append(catSpan);
 					attrs.$set('href', wikiLinkTemplate +
-						scope.roleDesc.team + "_" + scope.roleDesc.category);
+						scope.persona.team + "_" + scope.persona.category);
 				}
 			}
 		}

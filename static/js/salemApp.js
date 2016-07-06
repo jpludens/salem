@@ -7,8 +7,8 @@ app.config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.endSymbol(']}');
 }]);
 
-app.controller("mainCtrl", function ($scope, roleDescsFactory) {
-	$scope.descriptions = roleDescsFactory();
+app.controller("mainCtrl", function ($scope, personasFactory) {
+	$scope.personas = personasFactory();
 
 	$scope.specRest = null;
 	$scope.teamRest = null;
@@ -47,3 +47,8 @@ app.controller("mainCtrl", function ($scope, roleDescsFactory) {
 		}
 	}
 });
+
+app.controller("populationCtrl", function ($scope, populationsFactory) {
+	$scope.populations = populationsFactory();
+	console.log($scope.populations)
+})
