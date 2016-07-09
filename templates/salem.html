@@ -43,6 +43,15 @@
 		</div>
 	</div>
 	<div ng-controller="populationCtrl">
+		<select name=populationSelector ng-model="gameMode"
+			ng-options="mode for mode in populations.keys()|iterToArray">
+			<option disabled="true"></option>
+		</select>
+		<ul>
+			<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
+				<div role="true"></div>
+			</li>
+		</ul>
 	</div>
 </body>
 </html>

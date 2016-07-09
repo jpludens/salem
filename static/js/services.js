@@ -9,24 +9,27 @@ app.factory('personasFactory', function() {
 	return function() {
 
 		function Persona (team, category, name, unique) {
-			if (team == undefined) {
+			if (team == null) {
 				// Any player
+				this.id = "Any"
 				this.team = null;
 				this.category = null;
 				this.name = null;
 				this.unique = false;
 				this.specificity = 0;
 			}
-			else if (category == undefined) {
+			else if (category == null) {
 				// Team (and Random $Team Alignments)
+				this.id = "R" + team[0];
 				this.team = team;
 				this.category = null;
 				this.name = null;
 				this.unique = false;
 				this.specificity = 1;
 			}
-			else if (name == undefined) {
+			else if (name == null) {
 				// Alignment
+				this.id = team[0] + category[0];
 				this.team = team;
 				this.category = category;
 				this.name = null;
@@ -35,6 +38,7 @@ app.factory('personasFactory', function() {
 			}
 			else {
 				// Role
+				this.id = name;
 				this.team = team;
 				this.category = category;
 				this.name = name;
@@ -119,22 +123,7 @@ app.factory('personasFactory', function() {
 		var personas = new Map();
 		for (var i = 0; i < personaList.length; i++) {
 			var p = personaList[i];
-			if (p.specificity == 0) {
-				personas.set("Any", p);
-			}
-			else if (p.specificity == 1) {
-				// Random alignments: RT, RM, RN
-				personas.set("R" + p.team[0], p);
-			}
-			else if (p.specificity == 2) {
-				// Town alignments: TP, TS, TI, TK
-				// Mafia alignments: MK, MD, MS
-				// Neutral alignments: NK, NE, NB, NC
-				personas.set(p.team[0] + p.category[0], p);
-			}
-			else {
-				personas.set(p.name, p);
-			}
+			personas.set(p.id, p);
 		}
 		return personas;
 	}

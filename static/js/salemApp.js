@@ -50,5 +50,5 @@ app.controller("mainCtrl", function ($scope, personasFactory) {
 
 app.controller("populationCtrl", function ($scope, populationsFactory) {
 	$scope.populations = populationsFactory();
-	console.log($scope.populations)
+	$scope.gameMode = null;
 })
