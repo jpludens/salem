@@ -1,43 +1,50 @@
 
 /*****************************
-	BEGIN Role Selector styles
+	BEGIN Panel styles
 *****************************/
-.role-selector {
+.panel {
 	background-color: beige;
 	width: 480px;
+	display: inline-block;
+	vertical-align: top;
 }
 
 /* Role names are linked to the relevant wiki page,
 but it is preferred they don't appear as links. */
-.role-selector a {
+.panel a {
 	color: inherit;
 	text-decoration: inherit;
 }
 
-.role-selector--button-row {
+.panel--button-row {
 	display: block;
 }
 
-.role-selector--button {
+.panel--button {
 	display: inline-block;
 	padding: 5px 0px;
 	font-size: 1.5em;
 	text-align: center;
 }
 
+/* Set width for row with 1 button */
+.panel--button__single {
+	width: 480px;
+}
+
 /* Set width for row with 2 buttons */
-.role-selector--button__double {
+.panel--button__double {
 	width: 240px;
 }
 
 /* Set width for row with 3 buttons */
-.role-selector--button__triple {
+.panel--button__triple {
 	width: 160px;
 }
 
 /* Shadow effect: "Hit The Floor", found at
 http://www.hongkiat.com/blog/css-text-effects/ */
-.role-selector--button__pressed {
+.panel--button__pressed {
 	font-weight: bold;
 	background-color: burlywood;
 	text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
@@ -46,6 +53,9 @@ http://www.hongkiat.com/blog/css-text-effects/ */
 	END Role Selector styles
 ***************************/
 
+ul.persona-list {
+	list-style-type: none;
+}
 
 /*************************************************
 	BEGIN Role text color styles

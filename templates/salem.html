@@ -10,30 +10,30 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js/directives.js') }}"></script>
 </head>
 <body>
-	<div ng-controller="mainCtrl">
-		<div class="role-selector">
-			<div class="role-selector--button-row">
-				<div ng-class="'role-selector--button ' +
-					'role-selector--button__triple ' +
-					(val == held ? 'role-selector--button__held ' : '') +
-					'role-selector--button__' +
+	<div class="panel-group">
+		<div ng-controller="mainCtrl" class="panel">
+			<div class="panel--button-row">
+				<div ng-class="'panel--button ' +
+					'panel--button__triple ' +
+					(val == held ? 'panel--button__held ' : '') +
+					'panel--button__' +
 					(val == teamRest ? 'pressed role-text--' + val.toLowerCase() : 'unpressed')"
 					ng-repeat="val in teamRestValues"
 					ng-click="updateTeamRest(val)">
 					{[val]}
 				</div>
 			</div>
-			<div class="role-selector--button-row">
-				<div ng-class="'role-selector--button ' +
-					'role-selector--button__double ' +
-					'role-selector--button__' +
+			<div class="panel--button-row">
+				<div ng-class="'panel--button ' +
+					'panel--button__double ' +
+					'panel--button__' +
 					(val == specRest ? 'pressed' : 'unpressed')"
 					ng-repeat="val in specRestValues"
 					ng-click="updateSpecRest(val)">
 					{[val]}
 				</div>
 			</div>
-			<div class="role-selector--roles">
+			<div>
 				<ul ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest"
 					ng-class="(persona == selectedRole) ? 'selected' : ''"
 					ng-click="selectRole(persona)">
@@ -41,17 +41,18 @@
 				</ul>
 			</div>
 		</div>
-	</div>
-	<div ng-controller="populationCtrl">
-		<select name=populationSelector ng-model="gameMode"
-			ng-options="mode for mode in populations.keys()|iterToArray">
-			<option disabled="true"></option>
-		</select>
-		<ul>
-			<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
-				<div role="true"></div>
-			</li>
-		</ul>
+		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
+			<select name=populationSelector ng-model="gameMode"
+				ng-options="mode for mode in populations.keys()|iterToArray"
+				class="panel--button panel--button__single">
+				<option disabled="true" value="">-- Select Game Mode --</option>
+			</select>
+			<ul class="persona-list">
+				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
+					<div role="true"></div>
+				</li>
+			</ul>
+		</div>
 	</div>
 </body>
 </html>
