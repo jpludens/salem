@@ -20,7 +20,7 @@ app.directive("persona", function () {
 				else if (persona.specificity == 1) {
 					return wikiLinkTemplate + persona.team;
 				}
-				else if (persona.specificity == 1) {
+				else if (persona.specificity == 2) {
 					return wikiLinkTemplate + persona.team + "_" +
 						persona.category;
 				}
