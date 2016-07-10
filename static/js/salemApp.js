@@ -7,7 +7,7 @@ app.config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.endSymbol(']}');
 }]);
 
-app.controller("mainCtrl", function ($scope, personasFactory) {
+app.controller("personasCtrl", function ($scope, personasFactory) {
 	$scope.personas = personasFactory();
 
 	$scope.specRest = null;

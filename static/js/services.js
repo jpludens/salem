@@ -94,6 +94,7 @@ app.factory('personasFactory', function() {
 		personaList.push(new Persona('Town', 'Support', 'Medium'))
 		personaList.push(new Persona('Town', 'Support', 'Retributionist', true))
 		personaList.push(new Persona('Town', 'Support', 'Transporter'))
+		personaList.push(new Persona('Town', 'Investigative', 'Investigator'))
 		personaList.push(new Persona('Town', 'Investigative', 'Lookout'))
 		personaList.push(new Persona('Town', 'Investigative', 'Sheriff'))
 		personaList.push(new Persona('Town', 'Investigative', 'Spy'))
@@ -137,8 +138,7 @@ app.factory('populationsFactory', function(personasFactory) {
 		var classicPopulation = [
 			personas.get("Sheriff"),
 			personas.get("Doctor"),
-			personas.get("Sheriff"), // replace with investigator as part of that fix
-			// personas.get("Investigator"),
+			personas.get("Investigator"),
 			personas.get("Jailor"),
 			personas.get("Medium"),
 			personas.get("Godfather"),

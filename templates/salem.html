@@ -11,11 +11,10 @@
 </head>
 <body>
 	<div class="panel-group">
-		<div ng-controller="mainCtrl" class="panel">
+		<div ng-controller="personasCtrl" class="panel">
 			<div class="panel--button-row">
 				<div ng-class="'panel--button ' +
 					'panel--button__triple ' +
-					(val == held ? 'panel--button__held ' : '') +
 					'panel--button__' +
 					(val == teamRest ? 'pressed role-text--' + val.toLowerCase() : 'unpressed')"
 					ng-repeat="val in teamRestValues"
@@ -33,13 +32,11 @@
 					{[val]}
 				</div>
 			</div>
-			<div>
-				<ul ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest"
-					ng-class="(persona == selectedRole) ? 'selected' : ''"
-					ng-click="selectRole(persona)">
-						<p role="true" link-to-wiki="true"></p>
-				</ul>
-			</div>
+			<ul class="persona-list">
+				<li ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
+					<p role="true" link-to-wiki="true"></p>
+				</li>
+			</ul>
 		</div>
 		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
 			<select name=populationSelector ng-model="gameMode"
