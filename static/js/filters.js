@@ -25,8 +25,7 @@ app.filter('specOnly', function() {
 		}
 
 		var results = [];
-		// Restrict to roles: return only descriptions
-		// with specifity of 3.
+		// Restrict personas to roles (specifity of 3)
 		if (restriction == "Roles") {
 			for (var i = 0; i < input.length; i++) {
 				if (input[i].specificity == 3) {
@@ -34,8 +33,7 @@ app.filter('specOnly', function() {
 				}
 			}
 		}
-		// Restrict to alignments: return only descriptions
-		// with specifity under 3 (Any, Random $Team, Team $Category)
+		// Restrict personas to alignments (specificity under 3)
 		else if (restriction == "Alignments") {
 			for (var i = 0; i < input.length; i++) {
 				if (input[i].specificity < 3) {

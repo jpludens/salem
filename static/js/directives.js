@@ -2,7 +2,7 @@
 
 app = angular.module("salemApp");
 
-app.directive("role", function () {
+app.directive("persona", function () {
 	return {
 		scope: '@',
 		link: function (scope, elem, attrs) {
@@ -38,7 +38,7 @@ app.directive("role", function () {
 			// Handle 'Any'
 			if (scope.persona.specificity == 0) {
 				elem.text("Any");
-				elem.addClass("role-text--any");
+				elem.addClass("persona-text--any");
 			}
 			// Handle exact role names
 			else if (scope.persona.specificity == 3) {
@@ -54,17 +54,17 @@ app.directive("role", function () {
 				}
 
 				elem.text(scope.persona.name);
-				elem.addClass("role-text--" + classMod);
+				elem.addClass("persona-text--" + classMod);
 			}
 			// Handle 'Random $Team' and '$Team $Category'
 			else {
 				// The more general information is team, so set that at top level
 				elem.text(scope.persona.team);
-				elem.addClass("role-text--" + scope.persona.team.toLowerCase())
+				elem.addClass("persona-text--" + scope.persona.team.toLowerCase())
 
 				var catSpan = angular.element("<span></span>");
 				catSpan.text(scope.persona.category || "Random");
-				catSpan.addClass("role-text--category");
+				catSpan.addClass("persona-text--category");
 
 				// Random $Team
 				if (scope.persona.specificity == 1) {

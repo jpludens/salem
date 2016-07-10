@@ -1,19 +1,12 @@
 
-/*****************************
+/*********************
 	BEGIN Panel styles
-*****************************/
+*********************/
 .panel {
 	background-color: beige;
 	width: 480px;
 	display: inline-block;
 	vertical-align: top;
-}
-
-/* Role names are linked to the relevant wiki page,
-but it is preferred they don't appear as links. */
-.panel a {
-	color: inherit;
-	text-decoration: inherit;
 }
 
 .panel--button-row {
@@ -49,62 +42,84 @@ http://www.hongkiat.com/blog/css-text-effects/ */
 	background-color: burlywood;
 	text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
 }
-/***************************
-	END Role Selector styles
-***************************/
+/******************************
+	END Panel styles
+******************************/
+
+
+/****************************
+	BEGIN Persona list styles
+****************************/
 
 ul.persona-list {
 	list-style-type: none;
 }
 
+ul.persona-list p {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+/* Persona names are linked to the relevant wiki page,
+but it is preferred they don't appear as links. */
+ul.persona-list a {
+	color: inherit;
+	text-decoration: inherit;
+}
+
+/**************************
+	END Persona list styles
+**************************/
+
+
 /*************************************************
-	BEGIN Role text color styles
+	BEGIN Persona text color styles
 	These colors conform to Town of Salem styling.
 	Hex values were identified by page source from
 	town-of-salem.wikia.com
 *************************************************/
-.role-text--any {
+.persona-text--any {
 	/* Should be white, but doesn't show up well */
 }
-.role-text--category {
+.persona-text--category {
 	color: #49A9D0;
 }
-.role-text--town {
+.persona-text--town {
 	color: #45BF00;
 }
-.role-text--mafia {
+.persona-text--mafia {
 	color: #DD0000;
 }
-.role-text--neutral {
+.persona-text--neutral {
 	color: #ACACAC;
 }
-.role-text--amnesiac {
+.persona-text--amnesiac {
 	color: #4FF0E8;
 }
-.role-text--arsonist {
+.persona-text--arsonist {
 	color: #EE7600;
 }
-.role-text--executioner {
+.persona-text--executioner {
 	color: #ACACAC;
 }
-.role-text--jester {
+.persona-text--jester {
 	color: #F49FD0;
 }
-.role-text--serial-killer {
+.persona-text--serial-killer {
 	color: #000080;
 }
-.role-text--survivor {
+.persona-text--survivor {
 	color: #C8C800;
 }
-.role-text--vampire {
+.persona-text--vampire {
 	color: #7B8867;
 }
-.role-text--werewolf {
+.persona-text--werewolf {
 	color: #744A26;
 }
-.role-text--witch {
+.persona-text--witch {
 	color: #BF5FFF;
 }
-/*****************************
-	END Role text color styles
-*****************************/
+/********************************
+	END Persona text color styles
+********************************/

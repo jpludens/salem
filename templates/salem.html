@@ -16,7 +16,7 @@
 				<div ng-class="'panel--button ' +
 					'panel--button__triple ' +
 					'panel--button__' +
-					(val == teamRest ? 'pressed role-text--' + val.toLowerCase() : 'unpressed')"
+					(val == teamRest ? 'pressed persona-text--' + val.toLowerCase() : 'unpressed')"
 					ng-repeat="val in teamRestValues"
 					ng-click="updateTeamRest(val)">
 					{[val]}
@@ -34,7 +34,7 @@
 			</div>
 			<ul class="persona-list">
 				<li ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
-					<p role="true" link-to-wiki="true"></p>
+					<p persona="true" link-to-wiki="true"></p>
 				</li>
 			</ul>
 		</div>
@@ -46,7 +46,7 @@
 			</select>
 			<ul class="persona-list">
 				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
-					<p role="true"></p>
+					<p persona="true"></p>
 				</li>
 			</ul>
 		</div>
