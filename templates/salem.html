@@ -37,7 +37,7 @@
 				<ul ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest"
 					ng-class="(persona == selectedRole) ? 'selected' : ''"
 					ng-click="selectRole(persona)">
-						<a target="_blank" role=""></a>
+						<p role="true" link-to-wiki="true"></p>
 				</ul>
 			</div>
 		</div>
@@ -49,7 +49,7 @@
 			</select>
 			<ul class="persona-list">
 				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
-					<div role="true"></div>
+					<p role="true"></p>
 				</li>
 			</ul>
 		</div>
