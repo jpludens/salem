@@ -35,18 +35,32 @@
 			<ul class="persona-list">
 				<li ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
 					<p persona="true" link-to-wiki="true"></p>
+					<button ng-if="showAddToCustomButton"
+						ng-click="addToCustom(persona)">
+						Add to Custom Game
+					</button>
 				</li>
 			</ul>
 		</div>
 		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
 			<select name=populationSelector ng-model="gameMode"
 				ng-options="mode for mode in populations.keys()|iterToArray"
+				ng-disabled="editModeOn"
 				class="panel--button panel--button__single">
 				<option disabled="true" value="">-- Select Game Mode --</option>
 			</select>
+			<button class="panel--button panel--button__single"
+				ng-if="gameMode == 'Custom' && !editModeOn"
+				ng-click="startEditMode()">
+				EDIT POPULATION</button>
+			<button class="panel--button panel--button__single"
+				ng-if="gameMode == 'Custom' && editModeOn"
+				ng-click="endEditMode()">
+				DONE EDITING</button>
 			<ul class="persona-list">
 				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
 					<p persona="true"></p>
+					<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 				</li>
 			</ul>
 		</div>

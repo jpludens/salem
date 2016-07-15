@@ -7,6 +7,7 @@
 	width: 480px;
 	display: inline-block;
 	vertical-align: top;
+	padding-right: 10px;
 }
 
 .panel--button-row {
@@ -55,9 +56,18 @@ ul.persona-list {
 	list-style-type: none;
 }
 
-ul.persona-list p {
+ul.persona-list li {
+	display: flex;
+	justify-content: flex-end;
+}
+
+ul.persona-list li p {
 	margin-top: 8px;
 	margin-bottom: 8px;
+}
+
+ul.persona-list li button {
+	margin-left: 8px;
 }
 
 /* Persona names are linked to the relevant wiki page,

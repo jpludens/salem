@@ -77,7 +77,6 @@ app.directive("persona", function () {
 					elem.append(catSpan);
 				}
 			}
-			console.log(attrs);
 
 			if (attrs["linkToWiki"]) {
 				// Create an anchor tag linking to the appropriate wiki page
