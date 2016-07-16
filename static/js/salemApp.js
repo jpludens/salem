@@ -89,4 +89,42 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 	$scope.removeFromCustom = function(index) {
 		$scope.populations.get('Custom').splice(index, 1);
 	}
-})
+});
+
+app.controller("playerRosterCtrl", function ($scope) {
+	$scope.playerRoster = [];
+	for (var i = 0; i < 15; i++) {
+		$scope.playerRoster.push('[No Player Entered]')
+	}
+
+	$scope.editAllNamesMode = false;
+	$scope.editNameAtMode = false;
+
+	$scope.setEditAllNamesMode = function (setting) {
+		if (setting === true || setting === false) {
+			$scope.editAllNamesMode = setting;
+		}
+	}
+
+	$scope.setEditNameAtMode = function (index) {
+		if (index == null) {
+			return;
+		}
+		else if (index === false) {
+			$scope.editNameAtMode = false;
+		}
+		// Set to POSITION instead of INDEX
+		// This avoids having to correct for 0
+		// being 'on' but being falsey.
+		else {
+			$scope.editNameAtMode = index + 1;
+		}
+	}
+
+	$scope.checkEditingNameAt = function (index) {
+		if (index == null) {
+			return;
+		}
+		return $scope.editNameAtMode == index + 1
+	}
+});

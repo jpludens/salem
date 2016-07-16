@@ -10,6 +10,11 @@
 	padding-right: 10px;
 }
 
+h2.panel--header {
+	width: auto;
+	text-align: center;
+}
+
 .panel--button-row {
 	display: block;
 }
@@ -80,6 +85,23 @@ ul.persona-list a {
 /**************************
 	END Persona list styles
 **************************/
+
+
+/***************************
+	BEGIN Player list styles
+***************************/
+
+ul.player-list {
+	list-style-type: none;
+}
+
+.player-list-number {
+	font-weight: bold;
+}
+
+/*************************
+	END Player list styles
+*************************/
 
 
 /*************************************************

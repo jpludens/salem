@@ -3,6 +3,7 @@
 <head>
 	<title>Salem</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 	<script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/filters.js') }}"></script>
@@ -63,6 +64,38 @@
 					<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 				</li>
 			</ul>
+		</div>
+		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
+			<h2 class="panel--header">Player List</h2>
+			<button class="panel--button panel--button__single"
+				ng-click="setEditAllNamesMode(true)"
+				ng-disabled="editAllNamesMode">Edit All Names
+			</button>
+			<ul class="player-list">
+				<li ng-repeat="playerName in playerRoster track by $index">
+					<button tabindex="-1"
+						ng-class="'fa ' + (checkEditingNameAt($index) ?
+						'fa-check' : 'fa-pencil')"
+						ng-disabled="editAllNamesMode || editNameAtMode && !checkEditingNameAt($index)"
+						ng-click="editNameAtMode ? setEditNameAtMode(false) : setEditNameAtMode($index)">
+					</button>
+					<span class="player-list-number">
+						{[($index + 1)|padNumberText:2]}
+					</span>
+					<span class="player-name"
+						ng-hide="editAllNamesMode || checkEditingNameAt($index)">
+						{[playerName]}
+					</span>
+					<input type="text"
+						ng-show="editAllNamesMode || checkEditingNameAt($index)"
+						ng-model="playerRoster[$index]">
+					</input>
+				</li>
+			</ul>
+			<button class="panel--button panel--button__single"
+				ng-click="setEditAllNamesMode(false)"
+				ng-show="editAllNamesMode">Finish Editing
+			</button>
 		</div>
 	</div>
 </body>

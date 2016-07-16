@@ -87,3 +87,26 @@ app.filter('iterToArray', function() {
 		return results;
 	}
 });
+
+// This should really be padding with non-breaking spaces,
+// but doing that apparently requires an angular extension
+// and a module dependency.
+// I'm not willing to do that when '0' should work just fine.
+app.filter('padNumberText', function() {
+	return function(number, width, after) {
+		if (number == null || width == null || width < 0) {
+			return number;
+		}
+
+		var numString = String(number);
+		while (numString.length < width) {
+			if (after) {
+				numString += '0';
+			}
+			else {
+				numString = '0' + numString;
+			}
+		}
+		return numString;
+	}
+})
