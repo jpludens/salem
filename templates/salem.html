@@ -51,13 +51,11 @@
 				<option disabled="true" value="">-- Select Game Mode --</option>
 			</select>
 			<button class="panel--button panel--button__single"
-				ng-if="gameMode == 'Custom' && !editModeOn"
-				ng-click="startEditMode()">
-				EDIT POPULATION</button>
-			<button class="panel--button panel--button__single"
-				ng-if="gameMode == 'Custom' && editModeOn"
-				ng-click="endEditMode()">
-				DONE EDITING</button>
+				ng-show="gameMode == 'Custom'"
+				jpl-toggle toggle-state="editModeOn"
+				toggle-action="broadcastEditMode(editModeOn)"
+				off-text="Edit Population" on-text="Done Editing">
+			</button>
 			<ul class="persona-list">
 				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
 					<p persona="true"></p>
@@ -68,34 +66,31 @@
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
 			<h2 class="panel--header">Player List</h2>
 			<button class="panel--button panel--button__single"
-				ng-click="setEditAllNamesMode(true)"
-				ng-disabled="editAllNamesMode">Edit All Names
+				ng-disabled="editingNameAt != -1"
+				jpl-toggle toggle-state="editAllNamesMode"
+				off-text="Edit All Names" on-text="Done Editing">
 			</button>
 			<ul class="player-list">
 				<li ng-repeat="playerName in playerRoster track by $index">
 					<button tabindex="-1"
-						ng-class="'fa ' + (checkEditingNameAt($index) ?
+						ng-class="'fa ' + (editingNameAt == $index ?
 						'fa-check' : 'fa-pencil')"
-						ng-disabled="editAllNamesMode || editNameAtMode && !checkEditingNameAt($index)"
-						ng-click="editNameAtMode ? setEditNameAtMode(false) : setEditNameAtMode($index)">
+						ng-disabled="editAllNamesMode || editingNameAt != -1 && editingNameAt != $index"
+						ng-click="setEditingNameAt($index)">
 					</button>
 					<span class="player-list-number">
 						{[($index + 1)|padNumberText:2]}
 					</span>
 					<span class="player-name"
-						ng-hide="editAllNamesMode || checkEditingNameAt($index)">
+						ng-hide="editAllNamesMode || editingNameAt == $index">
 						{[playerName]}
 					</span>
 					<input type="text"
-						ng-show="editAllNamesMode || checkEditingNameAt($index)"
+						ng-if="editAllNamesMode || editingNameAt == $index"
 						ng-model="playerRoster[$index]">
 					</input>
 				</li>
 			</ul>
-			<button class="panel--button panel--button__single"
-				ng-click="setEditAllNamesMode(false)"
-				ng-show="editAllNamesMode">Finish Editing
-			</button>
 		</div>
 	</div>
 </body>

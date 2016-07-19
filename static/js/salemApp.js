@@ -69,25 +69,20 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 	$scope.personas = personasFactory();
 	$scope.populations = populationsFactory();
 	$scope.gameMode = null;
-	$scope.editModeOn = false;
 
 	$scope.$on('add to custom game', function(event, personaId) {
 		$scope.populations.get('Custom').push(
 			$scope.personas.get(personaId));
 	})
 
-	$scope.startEditMode = function() {
-		$scope.editModeOn = true;
-		$rootScope.$broadcast('set add to custom game button', 'on');
-	}
-
-	$scope.endEditMode = function() {
-		$scope.editModeOn = false;
-		$rootScope.$broadcast('set add to custom game button', 'off');
-	}
-
 	$scope.removeFromCustom = function(index) {
 		$scope.populations.get('Custom').splice(index, 1);
+	}
+
+	$scope.broadcastEditMode = function (state) {
+		$rootScope.$broadcast(
+			'set add to custom game button',
+			state ? 'on' : 'off');
 	}
 });
 
@@ -97,34 +92,14 @@ app.controller("playerRosterCtrl", function ($scope) {
 		$scope.playerRoster.push('[No Player Entered]')
 	}
 
-	$scope.editAllNamesMode = false;
-	$scope.editNameAtMode = false;
+	$scope.editingNameAt = -1;
 
-	$scope.setEditAllNamesMode = function (setting) {
-		if (setting === true || setting === false) {
-			$scope.editAllNamesMode = setting;
+	$scope.setEditingNameAt = function (index) {
+		if (index == $scope.editingNameAt) {
+			$scope.editingNameAt = -1;
 		}
-	}
-
-	$scope.setEditNameAtMode = function (index) {
-		if (index == null) {
-			return;
-		}
-		else if (index === false) {
-			$scope.editNameAtMode = false;
-		}
-		// Set to POSITION instead of INDEX
-		// This avoids having to correct for 0
-		// being 'on' but being falsey.
 		else {
-			$scope.editNameAtMode = index + 1;
+			$scope.editingNameAt = index;
 		}
-	}
-
-	$scope.checkEditingNameAt = function (index) {
-		if (index == null) {
-			return;
-		}
-		return $scope.editNameAtMode == index + 1
 	}
 });

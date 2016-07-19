@@ -92,3 +92,59 @@ app.directive("persona", function () {
 		}
 	}
 });
+
+app.directive('jplToggle', function() {
+	// Does not play nicely with:
+	// ng-click: Use toggle-action to achieve a similar effect.
+	//           toggle-action is guaranteed to execute AFTER
+	//           the state and text are updated.
+	// ng-if: Use ng-show to ensure that the toggle-state is
+	//        correctly set and accessible by other elements.
+	return {
+		priority: 1,
+		link: function (scope, elem, attrs) {
+			var state = false;
+			var toggleStateName = attrs['toggleState'];
+			var toggleAction = attrs['toggleAction'];
+			var onText = attrs['onText'] || "";
+			var offText = attrs['offText'] || "";
+
+			var turnOn = function() {
+				state = true;
+				elem.text(onText);
+				if (toggleStateName) {
+					scope[toggleStateName] = true;
+				}
+			}
+
+			var turnOff = function() {
+				state = false;
+				elem.text(offText);
+				if (toggleStateName) {
+					scope[toggleStateName] = false;
+				}
+			}
+
+			// Create toggle property on scope, if requested.
+			if (toggleStateName) {
+				scope[toggleStateName] = state;
+			}
+
+			// Set initial state.
+			attrs['startOn'] ? turnOn() : turnOff();
+
+			// Bind toggle. After turning off or on,
+			// execute toggle action, if requested.
+			elem.bind('click', function($event) {
+				scope.$apply(function () {
+					state ? turnOff() : turnOn();
+				});
+				if (toggleAction) {
+					scope.$apply( function() {
+						scope.$eval(toggleAction);
+					});
+				}
+			});
+		}
+	}
+});
