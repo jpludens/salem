@@ -148,3 +148,35 @@ app.directive('jplToggle', function() {
 		}
 	}
 });
+
+app.directive('jplFocus', function($timeout) {
+	return {
+		link: function (scope, elem, attrs) {
+			var prop = attrs['focusWatchProperty'];
+			var val = attrs['focusWhenValueIs'] || "true";
+
+			if (attrs['focusSelect']) {
+				var focusFn = function () {
+					elem[0].focus()
+					elem[0].select();
+				}
+			}
+			else {
+				var focusFn = function () {
+					elem[0].focus();
+				}
+			}
+
+			scope.$watch(
+				function () {
+					return scope.$eval(prop);
+				},
+				function(newValue) {
+					if (newValue == scope.$eval(val)) {
+						$timeout(focusFn);
+					}
+				}
+			);
+		}
+	}
+});

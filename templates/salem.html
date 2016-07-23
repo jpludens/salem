@@ -66,28 +66,47 @@
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
 			<h2 class="panel--header">Player List</h2>
 			<button class="panel--button panel--button__single"
-				ng-disabled="editingNameAt != -1"
+				ng-disabled="data.editingNameAt != -1"
 				jpl-toggle toggle-state="editAllNamesMode"
 				off-text="Edit All Names" on-text="Done Editing">
 			</button>
 			<ul class="player-list">
-				<li ng-repeat="playerName in playerRoster track by $index">
+				<li ng-repeat="playerName in data.playerRoster track by $index">
 					<button tabindex="-1"
-						ng-class="'fa ' + (editingNameAt == $index ?
+						ng-class="'fa ' + (data.editingNameAt == $index ?
 						'fa-check' : 'fa-pencil')"
-						ng-disabled="editAllNamesMode || editingNameAt != -1 && editingNameAt != $index"
-						ng-click="setEditingNameAt($index)">
+						ng-disabled="editAllNamesMode ||
+						data.editingNameAt != -1 && data.editingNameAt != $index"
+						ng-click="switchEditingNameAt($index)">
 					</button>
 					<span class="player-list-number">
 						{[($index + 1)|padNumberText:2]}
 					</span>
 					<span class="player-name"
-						ng-hide="editAllNamesMode || editingNameAt == $index">
+						ng-hide="editAllNamesMode || data.editingNameAt == $index">
 						{[playerName]}
 					</span>
 					<input type="text"
-						ng-if="editAllNamesMode || editingNameAt == $index"
-						ng-model="playerRoster[$index]">
+						ng-if="$first"
+						ng-show="editAllNamesMode"
+						ng-model="data.playerRoster[$index]"
+						jpl-focus focus-watch-property="editAllNamesMode" focus-select="true">
+					</input>
+					<input type="text"
+						ng-if="$first"
+						ng-show="data.editingNameAt == $index"
+						ng-model="data.playerRoster[$index]"
+						ng-keypress="$event.which === 13 && switchEditingNameAt($index)"
+						jpl-focus focus-watch-property="data.editingNameAt"
+						focus-when-value-is="$index" focus-select="true">
+					</input>
+					<input type="text"
+						ng-if="!$first"
+						ng-show="editAllNamesMode || data.editingNameAt == $index"
+						ng-model="data.playerRoster[$index]"
+						ng-keypress="$event.which === 13 && !editAllNamesMode && switchEditingNameAt($index)"
+						jpl-focus focus-watch-property="data.editingNameAt"
+						focus-when-value-is="$index" focus-select="true">
 					</input>
 				</li>
 			</ul>
