@@ -86,22 +86,26 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 	}
 });
 
-app.controller("playerRosterCtrl", function ($scope) {
+
+app.controller("playerRosterCtrl", function ($scope, playerService) {
 	$scope.data = {
 		playerRoster: [],
 		editingNameAt: -1
 	};
 
 	for (var i = 0; i < 15; i++) {
-		$scope.data.playerRoster.push('[No Player Entered]')
+		var playerNumber = i+1;
+		var playerName = '[Player ' + playerNumber + ']';
+		var player = new playerService(playerName, playerNumber);
+		$scope.data.playerRoster.push(player);
 	}
 
-	$scope.switchEditingNameAt = function (index) {
-		if (index == $scope.data.editingNameAt) {
+	$scope.switchEditingNameAt = function (playerNumber) {
+		if (playerNumber == $scope.data.editingNameAt) {
 			$scope.data.editingNameAt = -1;
 		}
 		else {
-			$scope.data.editingNameAt = index;
+			$scope.data.editingNameAt = playerNumber;
 		}
 	}
 });

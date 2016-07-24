@@ -71,42 +71,42 @@
 				off-text="Edit All Names" on-text="Done Editing">
 			</button>
 			<ul class="player-list">
-				<li ng-repeat="playerName in data.playerRoster track by $index">
+				<li ng-repeat="player in data.playerRoster">
 					<button tabindex="-1"
-						ng-class="'fa ' + (data.editingNameAt == $index ?
+						ng-class="'fa ' + (data.editingNameAt == player.number ?
 						'fa-check' : 'fa-pencil')"
 						ng-disabled="editAllNamesMode ||
-						data.editingNameAt != -1 && data.editingNameAt != $index"
-						ng-click="switchEditingNameAt($index)">
+						data.editingNameAt != -1 && data.editingNameAt != player.number"
+						ng-click="switchEditingNameAt(player.number)">
 					</button>
 					<span class="player-list-number">
-						{[($index + 1)|padNumberText:2]}
+						{[(player.number)|padNumberText:2]}
 					</span>
 					<span class="player-name"
-						ng-hide="editAllNamesMode || data.editingNameAt == $index">
-						{[playerName]}
+						ng-hide="editAllNamesMode || data.editingNameAt == player.number">
+						{[player.name]}
 					</span>
 					<input type="text"
 						ng-if="$first"
 						ng-show="editAllNamesMode"
-						ng-model="data.playerRoster[$index]"
+						ng-model="player.name"
 						jpl-focus focus-watch-property="editAllNamesMode" focus-select="true">
 					</input>
 					<input type="text"
 						ng-if="$first"
-						ng-show="data.editingNameAt == $index"
-						ng-model="data.playerRoster[$index]"
-						ng-keypress="$event.which === 13 && switchEditingNameAt($index)"
+						ng-show="data.editingNameAt == player.number"
+						ng-model="player.name"
+						ng-keypress="$event.which === 13 && switchEditingNameAt(player.number)"
 						jpl-focus focus-watch-property="data.editingNameAt"
-						focus-when-value-is="$index" focus-select="true">
+						focus-when-value-is="player.number" focus-select="true">
 					</input>
 					<input type="text"
 						ng-if="!$first"
-						ng-show="editAllNamesMode || data.editingNameAt == $index"
-						ng-model="data.playerRoster[$index]"
-						ng-keypress="$event.which === 13 && !editAllNamesMode && switchEditingNameAt($index)"
+						ng-show="editAllNamesMode || data.editingNameAt == player.number"
+						ng-model="player.name"
+						ng-keypress="$event.which === 13 && !editAllNamesMode && switchEditingNameAt(player.number)"
 						jpl-focus focus-watch-property="data.editingNameAt"
-						focus-when-value-is="$index" focus-select="true">
+						focus-when-value-is="player.number" focus-select="true">
 					</input>
 				</li>
 			</ul>

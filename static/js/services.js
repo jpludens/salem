@@ -194,3 +194,24 @@ app.factory('populationsFactory', function(personasFactory) {
 		return populations;
 	}
 });
+
+app.factory('playerService', function() {
+	return function(name, number) {
+		this.name = name;
+		this.number = number;
+		this.present = true;
+		this.alive = true;
+
+		this.kill = function () {
+			this.alive = false;
+		}
+
+		this.revive = function() {
+			this.alive = true;
+		}
+
+		this.leave = function () {
+			this.present = false;
+		}
+	}
+});
