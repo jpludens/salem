@@ -195,7 +195,7 @@ app.factory('populationsFactory', function(personasFactory) {
 	}
 });
 
-app.factory('playerService', function() {
+app.factory('playerFactory', function() {
 	return function(name, number) {
 		this.name = name;
 		this.number = number;
@@ -213,5 +213,18 @@ app.factory('playerService', function() {
 		this.leave = function () {
 			this.present = false;
 		}
+	}
+});
+
+app.factory('playerRosterFactory', function(playerFactory) {
+	return function() {
+		var playerRoster = [];
+		for (var i = 0; i < 15; i++) {
+			var playerNumber = i+1;
+			var playerName = '[Player ' + playerNumber + ']';
+			var player = new playerFactory(playerName, playerNumber);
+			playerRoster.push(player);
+		}
+		return playerRoster;
 	}
 });

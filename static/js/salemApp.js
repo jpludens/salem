@@ -87,19 +87,12 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 });
 
 
-app.controller("playerRosterCtrl", function ($scope, playerService) {
+app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
 	$scope.data = {
-		playerRoster: [],
+		playerRoster: playerRosterFactory(),
 		graveyard: [],
 		editingNameAt: -1
 	};
-
-	for (var i = 0; i < 15; i++) {
-		var playerNumber = i+1;
-		var playerName = '[Player ' + playerNumber + ']';
-		var player = new playerService(playerName, playerNumber);
-		$scope.data.playerRoster.push(player);
-	}
 
 	$scope.switchEditingNameAt = function (playerNumber) {
 		if (playerNumber == $scope.data.editingNameAt) {
