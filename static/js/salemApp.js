@@ -90,6 +90,7 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 app.controller("playerRosterCtrl", function ($scope, playerService) {
 	$scope.data = {
 		playerRoster: [],
+		graveyard: [],
 		editingNameAt: -1
 	};
 
@@ -106,6 +107,25 @@ app.controller("playerRosterCtrl", function ($scope, playerService) {
 		}
 		else {
 			$scope.data.editingNameAt = playerNumber;
+		}
+	}
+
+	$scope.killPlayer = function(player) {
+		if (player == null) {
+			return;
+		}
+		player.alive = false;
+		$scope.data.graveyard.push(player);
+	}
+
+	$scope.revivePlayer = function(player) {
+		if (player == null) {
+			return;
+		}
+		player.alive = true;
+		var index = $scope.data.graveyard.indexOf(player);
+		if (index > -1) {
+			$scope.data.graveyard.splice(index, 1);
 		}
 	}
 });

@@ -99,6 +99,14 @@ ul.player-list {
 	font-weight: bold;
 }
 
+.player-list-number__dead {
+	color: #ACACAC;
+}
+
+.player-name__dead {
+	color: #ACACAC;
+}
+
 /*************************
 	END Player list styles
 *************************/
