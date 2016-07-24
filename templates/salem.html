@@ -83,7 +83,7 @@
 						data.editingNameAt != -1 && data.editingNameAt != player.number"
 						ng-click="switchEditingNameAt(player.number)">
 					</button>
-					<span ng-class="player.alive ? 'player-name' : 'player-number__dead'">
+					<span ng-class="player.alive ? 'player-list-number' : 'player-list-number__dead'">
 						{[(player.number)|padNumberText:2]}
 					</span>
 					<span
@@ -125,6 +125,14 @@
 						{[player.number|padNumberText:2]}
 					</span>
 					<span class="player-name">{[player.name]}</span>
+				</li>
+			</ul>
+		</div>
+		<div ng-controller="gameEventLogCtrl" class="panel">
+			<h2 class="panel--header">Game Event Log</h2>
+			<ul class="event-log">
+				<li ng-repeat="event in data.eventLog">
+					{[event.player.name]} was {[event.eventType]}'d
 				</li>
 			</ul>
 		</div>

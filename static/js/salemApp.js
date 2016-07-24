@@ -109,16 +109,37 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		}
 		player.alive = false;
 		$scope.data.graveyard.push(player);
+		var killEvent = {
+			eventType: 'kill',
+			player: player
+		}
+		$rootScope.$broadcast('Game Event', killEvent);
 	}
 
 	$scope.revivePlayer = function(player) {
 		if (player == null) {
 			return;
 		}
-		player.alive = true;
 		var index = $scope.data.graveyard.indexOf(player);
 		if (index > -1) {
+			player.alive = true;
 			$scope.data.graveyard.splice(index, 1);
+			var reviveEvent = {
+				eventType: 'revive',
+				player: player
+			}
+			$rootScope.$broadcast('Game Event', reviveEvent);
 		}
 	}
+});
+
+app.controller('gameEventLogCtrl', function($scope, $rootScope) {
+	$scope.data = {
+		eventLog: []
+	}
+
+	$scope.$on('Game Event', function(event, gameEvent) {
+		$scope.data.eventLog.push(gameEvent);
+	});
+
 });
