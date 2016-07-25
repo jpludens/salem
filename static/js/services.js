@@ -228,3 +228,21 @@ app.factory('playerRosterFactory', function(playerFactory) {
 		return playerRoster;
 	}
 });
+
+app.factory('gameEventFactory', function() {
+	return function(eventType, eventDataFields, summarize) {
+		var gameEvent = function(eventData) {
+			this.eventType = eventType;
+			this.summarize = summarize;
+			this.eventData = {};
+
+			// Copy the properties of eventData
+			// whose names are in eventDataFields
+			for (var i = 0; i < eventDataFields.length; i++) {
+				var dataField = eventDataFields[i];
+				this.eventData[dataField] = eventData[dataField];
+			}
+		}
+		return gameEvent;
+	}
+});

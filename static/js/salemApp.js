@@ -87,7 +87,24 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 });
 
 
-app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
+app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory, gameEventFactory) {
+
+	console.log(gameEventFactory);
+	var eventFactory = gameEventFactory(
+		'Foo Event',
+		['bar field', 'baz field'],
+		function() {
+			return 'Summary!'
+		}
+	);
+
+	console.log(eventFactory);
+
+	event = new eventFactory({'bar field': 'BAR', 'baz field': 'BAZ'});
+	console.log(event);
+	console.log(event.summarize());
+
+
 	$scope.data = {
 		playerRoster: playerRosterFactory(),
 		graveyard: [],
