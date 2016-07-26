@@ -229,20 +229,29 @@ app.factory('playerRosterFactory', function(playerFactory) {
 	}
 });
 
-app.factory('gameEventFactory', function() {
-	return function(eventType, eventDataFields, summarize) {
-		var gameEvent = function(eventData) {
+app.provider('gameEventProvider', function() {
+	var factories = {};
+
+	this.registerType = function(eventType, eventDataFields, toString) {
+		factories[eventType] = function(eventData) {
 			this.eventType = eventType;
-			this.summarize = summarize;
-			this.eventData = {};
+			this.toString = toString;
+			this.data = {};
 
 			// Copy the properties of eventData
 			// whose names are in eventDataFields
 			for (var i = 0; i < eventDataFields.length; i++) {
 				var dataField = eventDataFields[i];
-				this.eventData[dataField] = eventData[dataField];
+				this.data[dataField] = eventData[dataField];
 			}
 		}
-		return gameEvent;
+	}
+
+	this.$get = function() {
+		return {
+			create: function(eventType, eventData) {
+				return new factories[eventType](eventData);
+			}
+		}
 	}
 });

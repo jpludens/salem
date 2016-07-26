@@ -2,10 +2,22 @@
 
 var app = angular.module("salemApp", []);
 
-app.config(['$interpolateProvider', function($interpolateProvider) {
+app.config(function($interpolateProvider, gameEventProviderProvider) {
 	$interpolateProvider.startSymbol('{[');
 	$interpolateProvider.endSymbol(']}');
-}]);
+
+	gameEventProviderProvider.registerType('death', ['player'],
+		function () {
+			return this.data.player.name + ' died.'
+		}
+	);
+
+	gameEventProviderProvider.registerType('revival', ['player'],
+		function () {
+			return this.data.player.name + ' was revived!'
+		}
+	);
+});
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 	$scope.personas = personasFactory();
@@ -87,24 +99,7 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 });
 
 
-app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory, gameEventFactory) {
-
-	console.log(gameEventFactory);
-	var eventFactory = gameEventFactory(
-		'Foo Event',
-		['bar field', 'baz field'],
-		function() {
-			return 'Summary!'
-		}
-	);
-
-	console.log(eventFactory);
-
-	event = new eventFactory({'bar field': 'BAR', 'baz field': 'BAZ'});
-	console.log(event);
-	console.log(event.summarize());
-
-
+app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory, gameEventProvider) {
 	$scope.data = {
 		playerRoster: playerRosterFactory(),
 		graveyard: [],
@@ -126,10 +121,7 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		}
 		player.alive = false;
 		$scope.data.graveyard.push(player);
-		var killEvent = {
-			eventType: 'kill',
-			player: player
-		}
+		var killEvent = gameEventProvider.create('death', {player: player});
 		$rootScope.$broadcast('Game Event', killEvent);
 	}
 
@@ -141,10 +133,7 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		if (index > -1) {
 			player.alive = true;
 			$scope.data.graveyard.splice(index, 1);
-			var reviveEvent = {
-				eventType: 'revive',
-				player: player
-			}
+			var reviveEvent = gameEventProvider.create('revival', {player: player});
 			$rootScope.$broadcast('Game Event', reviveEvent);
 		}
 	}
