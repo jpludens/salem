@@ -232,17 +232,27 @@ app.factory('playerRosterFactory', function(playerFactory) {
 app.provider('gameEventProvider', function() {
 	var factories = {};
 
-	this.registerType = function(eventType, eventDataFields, toString) {
-		factories[eventType] = function(eventData) {
+	this.registerType = function(eventType, dataProperties, otherObj) {
+		if (eventType == null) return;
+		factories[eventType] = function(dataObj) {
 			this.eventType = eventType;
-			this.toString = toString;
 			this.data = {};
 
-			// Copy the properties of eventData
-			// whose names are in eventDataFields
-			for (var i = 0; i < eventDataFields.length; i++) {
-				var dataField = eventDataFields[i];
-				this.data[dataField] = eventData[dataField];
+			// Copy any properties from the data object that are defined in
+			// the dataProperties list. Set any property name dataProperties
+			// but NOT in the data object to null.
+			for (var i = 0; i < dataProperties.length; i++) {
+				var dataProperty = dataProperties[i];
+				dataVal = dataObj[dataProperties] || null;
+				this.data[dataProperty] = dataVal;
+			}
+
+			// Set new properties, as long as they don't overwrite anything
+			for (otherProperty in otherObj) {
+				if (otherObj.hasOwnProperty(otherProperty) &&
+					!this.hasOwnProperty(otherProperty)) {
+					this[otherProperty] = otherObj[otherProperty];
+				}
 			}
 		}
 	}

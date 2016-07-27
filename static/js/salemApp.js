@@ -6,17 +6,17 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	$interpolateProvider.startSymbol('{[');
 	$interpolateProvider.endSymbol(']}');
 
-	gameEventProviderProvider.registerType('death', ['player'],
-		function () {
-			return this.data.player.name + ' died.'
+	var deathObj = { toString: function () {
+			return this.data.player.name + ' died.';
 		}
-	);
+	}
+	gameEventProviderProvider.registerType('death', ['player'], deathObj);
 
-	gameEventProviderProvider.registerType('revival', ['player'],
-		function () {
-			return this.data.player.name + ' was revived!'
+	var revivalObj = { toString: function () {
+			return this.data.player.name + ' was revived!';
 		}
-	);
+	}
+	gameEventProviderProvider.registerType('revival', ['player'], revivalObj);
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
