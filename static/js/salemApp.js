@@ -6,17 +6,21 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	$interpolateProvider.startSymbol('{[');
 	$interpolateProvider.endSymbol(']}');
 
-	var deathObj = { toString: function () {
-			return this.data.player.name + ' died.';
-		}
+	var deathString = function() {
+		var player = this.data.player.name || '[An unknown player]';
+		var time = this.data.time.toString() || '[Time of death unknown]';
+		return player + ' died on ' + time;
 	}
-	gameEventProviderProvider.registerType('death', ['player'], deathObj);
+	var deathObj = { toString: deathString };
+	gameEventProviderProvider.registerType('death', ['player', 'time'], deathObj);
 
-	var revivalObj = { toString: function () {
-			return this.data.player.name + ' was revived!';
-		}
+	var reviveString = function() {
+		var player = this.data.player.name || '[An unknown player]';
+		var time = this.data.time.toString() || '[Time of revival unknown]';
+		return player + ' was revivied on ' + time;
 	}
-	gameEventProviderProvider.registerType('revival', ['player'], revivalObj);
+	var revivalObj = { toString: reviveString };
+	gameEventProviderProvider.registerType('revival', ['player', 'time'], revivalObj);
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
@@ -99,7 +103,8 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 });
 
 
-app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory, gameEventProvider) {
+app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
+
 	$scope.data = {
 		playerRoster: playerRosterFactory(),
 		graveyard: [],
@@ -121,8 +126,13 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		}
 		player.alive = false;
 		$scope.data.graveyard.push(player);
-		var killEvent = gameEventProvider.create('death', {player: player});
-		$rootScope.$broadcast('Game Event', killEvent);
+		var eventDescription = {
+			eventType: 'death',
+			eventData: {
+				player: player
+			}
+		}
+		$rootScope.$broadcast('Game Event', eventDescription);
 	}
 
 	$scope.revivePlayer = function(player) {
@@ -133,19 +143,36 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		if (index > -1) {
 			player.alive = true;
 			$scope.data.graveyard.splice(index, 1);
-			var reviveEvent = gameEventProvider.create('revival', {player: player});
-			$rootScope.$broadcast('Game Event', reviveEvent);
+			var eventDescription = {
+				eventType: 'revival',
+				eventData: {
+					player: player
+				}
+			}
+			$rootScope.$broadcast('Game Event', eventDescription);
 		}
 	}
 });
 
-app.controller('gameEventLogCtrl', function($scope, $rootScope) {
+app.controller('gameEventLogCtrl', function($scope, $rootScope,
+	salemClockFactory, gameEventProvider, gameEventLogFactory) {
+	var clock = salemClockFactory;
+	var eventLog = gameEventLogFactory;
+
 	$scope.data = {
-		eventLog: []
-	}
+		events: eventLog.entries
+	};
 
-	$scope.$on('Game Event', function(event, gameEvent) {
-		$scope.data.eventLog.push(gameEvent);
+	$scope.$on('Game Event', function(event, eventDescription) {
+		// Before you squint to check, the 'event' is not used here. :)
+		eventDescription.eventData.time = clock.getTime();
+		var gameEvent = gameEventProvider.create(
+			eventDescription.eventType,
+			eventDescription.eventData);
+		eventLog.log(gameEvent);
 	});
+});
 
+app.controller('salemClockCtrl', function($scope, salemClockFactory) {
+	$scope.clock = salemClockFactory;
 });

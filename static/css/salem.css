@@ -125,6 +125,22 @@ ul.event-log {
 *************************/
 
 
+/****************************
+	BEGIN Clock list styles
+****************************/
+
+.clock-control {
+	display: inline-block;
+}
+.clock-control p {
+	display: inline;
+}
+
+/**************************
+	END Clock list styles
+**************************/
+
+
 /*************************************************
 	BEGIN Persona text color styles
 	These colors conform to Town of Salem styling.

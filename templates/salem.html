@@ -128,10 +128,18 @@
 				</li>
 			</ul>
 		</div>
+		<div ng-controller="salemClockCtrl" class="panel">
+			<h2 class="panel--header">Salem Clock</h2>
+			<div class="clock-control">
+				<button ng-click="clock.recede()">Fall Back</button>
+				<span>{[clock.toString()]}</p>
+				<button ng-click="clock.advance()">Spring Forward</button>
+			</div>
+		</div>
 		<div ng-controller="gameEventLogCtrl" class="panel">
 			<h2 class="panel--header">Game Event Log</h2>
 			<ul class="event-log">
-				<li ng-repeat="event in data.eventLog">
+				<li ng-repeat="event in data.events">
 					{[event.toString()]}
 				</li>
 			</ul>

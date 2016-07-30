@@ -229,6 +229,37 @@ app.factory('playerRosterFactory', function(playerFactory) {
 	}
 });
 
+app.factory('salemClockFactory', function() {
+	return {
+		phase: 'Day',
+		number: 1,
+		setPhase: function(phase) {
+			if (phase == 'Day' || phase == 'Night') this.phase = phase;
+		},
+		setNumber: function(number) {
+			if (number > 0) this.number = number;
+		},
+		advance: function() {
+			this.phase = this.phase == 'Day' ? 'Night' : 'Day';
+			this.number += 1;
+		},
+		recede: function() {
+			this.phase = this.phase == 'Day' ? 'Night' : 'Day';
+			this.number -= this.number > 0 ? 1 : 0;
+		},
+		toString: function() {
+			return this.phase + ' ' + this.number;
+		},
+		getTime: function() {
+			return {
+				phase: this.phase,
+				number: this.number,
+				toString: this.toString
+			}
+		}
+	}
+});
+
 app.provider('gameEventProvider', function() {
 	var factories = {};
 
@@ -243,7 +274,7 @@ app.provider('gameEventProvider', function() {
 			// but NOT in the data object to null.
 			for (var i = 0; i < dataProperties.length; i++) {
 				var dataProperty = dataProperties[i];
-				dataVal = dataObj[dataProperties] || null;
+				dataVal = dataObj[dataProperty] || null;
 				this.data[dataProperty] = dataVal;
 			}
 
@@ -264,4 +295,14 @@ app.provider('gameEventProvider', function() {
 			}
 		}
 	}
+});
+
+app.factory('gameEventLogFactory', function() {
+	var eventLog = {
+		entries: [],
+		log: function(gameEvent) {
+			this.entries.push(gameEvent);
+		}
+	};
+	return eventLog;
 });
