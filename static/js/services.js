@@ -131,66 +131,32 @@ app.factory('personasFactory', function() {
 });
 
 // Create role populations used by various game modes
-app.factory('populationsFactory', function(personasFactory) {
+app.factory('populationsFactory', function($http, personasFactory) {
 	return function() {
+		var populations = new Map();
 		var personas = personasFactory();
+		var addMode = function (mode) {
+			var personaList = []
+			for (var i = 0; i < mode.population.length; i++) {
+				var persona = personas.get(mode.population[i])
+				personaList.push(persona);
+			}
+			populations.set(mode.name, personaList);
+		};
 
-		var classicPopulation = [
-			personas.get("Sheriff"),
-			personas.get("Doctor"),
-			personas.get("Investigator"),
-			personas.get("Jailor"),
-			personas.get("Medium"),
-			personas.get("Godfather"),
-			personas.get("Framer"),
-			personas.get("Executioner"),
-			personas.get("Escort"),
-			personas.get("Mafioso"),
-			personas.get("Lookout"),
-			personas.get("Serial Killer"),
-			personas.get("TK"),
-			personas.get("Jester"),
-			personas.get("RT")];
+		$http({
+			url: '/api/game_modes',
+			dataType: "json",
+			method: "GET"
+		}).success(function (response) {
+			for (var i = 0; i < response.length; i++) {
+				addMode(response[i]);
+			}
+		}).error(function (error) {
+			// TODO: BE NICE IF THIS ACTUALLY HANDLED THE ERROR.
+			console.log(error);
+		});
 
-		var rankedPopulation = [
-			personas.get("Jailor"),
-			personas.get("TI"),
-			personas.get("TI"),
-			personas.get("TS"),
-			personas.get("TS"),
-			personas.get("TP"),
-			personas.get("TK"),
-			personas.get("RT"),
-			personas.get("Godfather"),
-			personas.get("Mafioso"),
-			personas.get("RM"),
-			personas.get("NK"),
-			personas.get("NE"),
-			personas.get("NB"),
-			personas.get("Any")];
-
-		var rainbowPopulation = [
-			personas.get("Godfather"),
-			personas.get("Arsonist"),
-			personas.get("Survivor"),
-			personas.get("Jailor"),
-			personas.get("Amnesiac"),
-			personas.get("Serial Killer"),
-			personas.get("Witch"),
-			personas.get("Any"),
-			personas.get("Witch"),
-			personas.get("Serial Killer"),
-			personas.get("Amnesiac"),
-			personas.get("Veteran"),
-			personas.get("Survivor"),
-			personas.get("Arsonist"),
-			personas.get("Mafioso")];
-
-		var populations = new Map()
-		populations.set("Classic", classicPopulation);
-		populations.set("Ranked", rankedPopulation);
-		populations.set("Rainbow", rainbowPopulation);
-		populations.set("Custom", []);
 		return populations;
 	}
 });

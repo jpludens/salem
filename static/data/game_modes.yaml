@@ -1,0 +1,66 @@
+- name: Classic
+  population:
+      - Sheriff
+      - Doctor
+      - Investigator
+      - Jailor
+      - Medium
+      - Godfather
+      - Framer
+      - Executioner
+      - Escort
+      - Mafioso
+      - Lookout
+      - Serial Killer
+      - TK
+      # - Town Killing
+      - Jester
+      - RT
+      - Random Town
+- name: Ranked
+  population:
+      - Jailor
+      - TI
+      - TI
+      # - Town Investigative
+      # - Town Investigative
+      - TS
+      - TS
+      # - Town Support
+      # - Town Support
+      - TP
+      # - Town Protective
+      - TK
+      # - Town Killing
+      - RT
+      # - Random Town
+      - Godfather
+      - Mafioso
+      - RM
+      # - Random Mafia
+      - NK
+      # - Neutral Killing
+      - NE
+      # - Neutral Evil
+      - NB
+      # - Neutral Benign
+      - Any
+- name: Rainbow
+  population:
+      - Godfather
+      - Arsonist
+      - Survivor
+      - Jailor
+      - Amnesiac
+      - Serial Killer
+      - Witch
+      - Any
+      - Witch
+      - Serial Killer
+      - Amnesiac
+      - Veteran
+      - Survivor
+      - Arsonist
+      - Mafioso
+- name: Custom
+  population: [] # Can be filled and manipulated by players/users
