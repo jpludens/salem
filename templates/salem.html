@@ -33,7 +33,8 @@
 					{[val]}
 				</div>
 			</div>
-			<ul class="persona-list">
+			<ul class="persona-list"
+				ng-if="personas.size">
 				<li ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
 					<p persona="true" link-to-wiki="true"></p>
 					<button ng-if="showAddToCustomButton"
@@ -42,6 +43,7 @@
 					</button>
 				</li>
 			</ul>
+			<p ng-if="!personas.size">Waiting for or failed to retrive data. In order, try: waiting a few seconds, refreshing the page, rolling on the floor and crying.</p>
 		</div>
 		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
 			<div ng-if="populations.size">
@@ -65,7 +67,7 @@
 				</ul>
 			</div>
 			<div ng-if="!populations.size">
-				<p>Failed to retrieve game mode population data. Maybe refreshing will work?</p>
+				<p>Waiting for or failed to retrive data. In order, try: waiting a few seconds, refreshing the page, rolling on the floor and crying.</p>
 			</div>
 		</div>
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
