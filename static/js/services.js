@@ -148,13 +148,14 @@ app.factory('populationsFactory', function($http, personasFactory) {
 			url: '/api/game_modes',
 			dataType: "json",
 			method: "GET"
-		}).success(function (response) {
-			for (var i = 0; i < response.length; i++) {
-				addMode(response[i]);
+		}).then(function (response) {
+			for (var i = 0; i < response.data.length; i++) {
+				addMode(response.data[i]);
 			}
-		}).error(function (error) {
-			// TODO: BE NICE IF THIS ACTUALLY HANDLED THE ERROR.
-			console.log(error);
+		}, function (response) {
+			// TODO: This is where I'd write some logs.
+			// IF I HAD ANY!!!
+			console.log(response);
 		});
 
 		return populations;

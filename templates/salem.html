@@ -44,24 +44,29 @@
 			</ul>
 		</div>
 		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
-			<select name=populationSelector ng-model="gameMode"
-				ng-options="mode for mode in populations.keys()|iterToArray"
-				ng-disabled="editModeOn"
-				class="panel--button panel--button__single">
-				<option disabled="true" value="">-- Select Game Mode --</option>
-			</select>
-			<button class="panel--button panel--button__single"
-				ng-show="gameMode == 'Custom'"
-				jpl-toggle toggle-state="editModeOn"
-				toggle-action="broadcastEditMode(editModeOn)"
-				off-text="Edit Population" on-text="Done Editing">
-			</button>
-			<ul class="persona-list">
-				<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
-					<p persona="true"></p>
-					<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
-				</li>
-			</ul>
+			<div ng-if="populations.size">
+				<select name=populationSelector ng-model="gameMode"
+					ng-options="mode for mode in populations.keys()|iterToArray"
+					ng-disabled="editModeOn"
+					class="panel--button panel--button__single">
+					<option disabled="true" value="">-- Select Game Mode --</option>
+				</select>
+				<button class="panel--button panel--button__single"
+					ng-show="gameMode == 'Custom'"
+					jpl-toggle toggle-state="editModeOn"
+					toggle-action="broadcastEditMode(editModeOn)"
+					off-text="Edit Population" on-text="Done Editing">
+				</button>
+				<ul class="persona-list">
+					<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
+						<p persona="true"></p>
+						<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
+					</li>
+				</ul>
+			</div>
+			<div ng-if="!populations.size">
+				<p>Failed to retrieve game mode population data. Maybe refreshing will work?</p>
+			</div>
 		</div>
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
 			<h2 class="panel--header">Player List</h2>
