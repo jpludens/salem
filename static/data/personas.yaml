@@ -1,0 +1,233 @@
+# Specifications for Town of Salem 
+-
+  name: Any
+
+# Team only
+-
+  name: Random Town
+  team: Town
+-
+  name: Random Mafia
+  team: Mafia
+-
+  name: Random Neutral
+  team: Neutral
+
+# Team and Category only
+-
+  name: Town Protective
+  team: Town
+  category: Protective
+-
+  name: Town Support
+  team: Town
+  category: Support
+-
+  name: Town Investigative
+  team: Town
+  category: Investigative
+-
+  name: Town Killing
+  team: Town
+  category: Killing
+-
+  name: Mafia Killing
+  team: Mafia
+  category: Killing
+-
+  name: Mafia Deception
+  team: Mafia
+  category: Deception
+-
+  name: Mafia Support
+  team: Mafia
+  category: Support
+-
+  name: Neutral Killing
+  team: Neutral
+  category: Killing
+-
+  name: Neutral Evil
+  team: Neutral
+  category: Evil
+-
+  name: Neutral Benign
+  team: Neutral
+  category: Benign
+-
+  name: Neutral Chaos
+  team: Neutral
+  category: Chaos
+
+# Specific Roles
+-
+  name: Bodyguard
+  team: Town
+  category: Protective
+  roleName: Bodyguard
+-
+  name: Doctor
+  team: Town
+  category: Protective
+  roleName: Doctor
+-
+  name: Escort
+  team: Town
+  category: Support
+  roleName: Escort
+-
+  name: Mayor
+  team: Town
+  category: Support
+  roleName: Mayor
+  unique: true
+-
+  name: Medium
+  team: Town
+  category: Support
+  roleName: Medium
+-
+  name: Retributionist
+  team: Town
+  category: Support
+  roleName: Retributionist
+  unique: true
+-
+  name: Transporter
+  team: Town
+  category: Support
+  roleName: Transporter
+-
+  name: Investigator
+  team: Town
+  category: Investigative
+  roleName: Investigator
+-
+  name: Lookout
+  team: Town
+  category: Investigative
+  roleName: Lookout
+-
+  name: Sheriff
+  team: Town
+  category: Investigative
+  roleName: Sheriff
+-
+  name: Spy
+  team: Town
+  category: Investigative
+  roleName: Spy
+-
+  name: Jailor
+  team: Town
+  category: Killing
+  roleName: Jailor
+  unique: true
+-
+  name: Vampire Hunter
+  team: Town
+  category: Killing
+  roleName: Vampire Hunter
+-
+  name: Veteran
+  team: Town
+  category: Killing
+  roleName: Veteran
+  unique: true
+-
+  name: Vigilante
+  team: Town
+  category: Killing
+  roleName: Vigilante
+-
+  name: Godfather
+  team: Mafia
+  category: Killing
+  roleName: Godfather
+  unique: true
+-
+  name: Mafioso
+  team: Mafia
+  category: Killing
+  roleName: Mafioso
+  unique: true
+-
+  name: Disguiser
+  team: Mafia
+  category: Deception
+  roleName: Disguiser
+-
+  name: Forger
+  team: Mafia
+  category: Deception
+  roleName: Forger
+-
+  name: Framer
+  team: Mafia
+  category: Deception
+  roleName: Framer
+-
+  name: Janitor
+  team: Mafia
+  category: Deception
+  roleName: Janitor
+-
+  name: Blackmailer
+  team: Mafia
+  category: Support
+  roleName: Blackmailer
+-
+  name: Consigliere
+  team: Mafia
+  category: Support
+  roleName: Consigliere
+-
+  name: Consort
+  team: Mafia 
+  category: Support
+  roleName: Consort
+-
+  name: Arsonist
+  team: Neutral
+  category: Killing
+  roleName: Arsonist
+-
+  name: Serial Killer
+  team: Neutral
+  category: Killing
+  roleName: Serial Killer
+-
+  name: Werewolf
+  team: Neutral
+  category: Killing
+  roleName: Werewolf
+-
+  name: Executioner
+  team: Neutral
+  category: Evil
+  roleName: Executioner
+-
+  name: Jester
+  team: Neutral
+  category: Evil
+  roleName: Jester
+-
+  name: Witch
+  team: Neutral
+  category: Evil
+  roleName: Witch
+-
+  name: Amnesiac
+  team: Neutral
+  category: Benign
+  roleName: Amnesiac
+-
+  name: Survivor
+  team: Neutral
+  category: Benign
+  roleName: Survivor
+-
+  name: Vampire
+  team: Neutral
+  category: Chaos
+  roleName: Vampire

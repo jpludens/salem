@@ -58,7 +58,7 @@
 					off-text="Edit Population" on-text="Done Editing">
 				</button>
 				<ul class="persona-list">
-					<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.id">
+					<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.name">
 						<p persona="true"></p>
 						<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 					</li>

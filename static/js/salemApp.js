@@ -24,7 +24,7 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
-	$scope.personas = personasFactory();
+	$scope.personas = personasFactory;
 
 	$scope.specRest = null;
 	$scope.teamRest = null;
@@ -65,7 +65,7 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 	}
 
 	$scope.addToCustom = function(persona) {
-		$rootScope.$broadcast('add to custom game', persona.id)
+		$rootScope.$broadcast('add to custom game', persona)
 	}
 
 	$scope.$on('set add to custom game button', function (event, setting) {
@@ -81,14 +81,12 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 	})
 });
 
-app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, populationsFactory) {
-	$scope.personas = personasFactory();
-	$scope.populations = populationsFactory();
+app.controller("populationCtrl", function ($scope, $rootScope, populationsFactory) {
+	$scope.populations = populationsFactory;
 	$scope.gameMode = null;
 
-	$scope.$on('add to custom game', function(event, personaId) {
-		$scope.populations.get('Custom').push(
-			$scope.personas.get(personaId));
+	$scope.$on('add to custom game', function(event, persona) {
+		$scope.populations.get('Custom').push(persona);
 	})
 
 	$scope.removeFromCustom = function(index) {
@@ -106,7 +104,7 @@ app.controller("populationCtrl", function ($scope, $rootScope, personasFactory, 
 app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
 
 	$scope.data = {
-		playerRoster: playerRosterFactory(),
+		playerRoster: playerRosterFactory,
 		graveyard: [],
 		editingNameAt: -1
 	};

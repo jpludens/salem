@@ -12,38 +12,26 @@
       - Mafioso
       - Lookout
       - Serial Killer
-      - TK
-      # - Town Killing
+      - Town Killing
       - Jester
       - RT
       - Random Town
 - name: Ranked
   population:
       - Jailor
-      - TI
-      - TI
-      # - Town Investigative
-      # - Town Investigative
-      - TS
-      - TS
-      # - Town Support
-      # - Town Support
-      - TP
-      # - Town Protective
-      - TK
-      # - Town Killing
-      - RT
-      # - Random Town
+      - Town Investigative
+      - Town Investigative
+      - Town Support
+      - Town Support
+      - Town Protective
+      - Town Killing
+      - Random Town
       - Godfather
       - Mafioso
-      - RM
-      # - Random Mafia
-      - NK
-      # - Neutral Killing
-      - NE
-      # - Neutral Evil
-      - NB
-      # - Neutral Benign
+      - Random Mafia
+      - Neutral Killing
+      - Neutral Evil
+      - Neutral Benign
       - Any
 - name: Rainbow
   population:
