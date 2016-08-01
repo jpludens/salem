@@ -33,9 +33,17 @@
 					{[val]}
 				</div>
 			</div>
+			<div ng-if="data.personasLoading"
+				class="panel--button panel--button__single
+					fa fa-spinner fa-spin fa-3x">
+				Loading...
+			</div>
+			<p ng-if="data.personasError">
+				Failed to retrieve data. Try refreshing the page, or failing that, rolling on the floor	and crying.
+			</p>
 			<ul class="persona-list"
-				ng-if="personas.size">
-				<li ng-repeat="persona in personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
+				ng-if="data.personas">
+				<li ng-repeat="persona in data.personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
 					<p persona="true" link-to-wiki="true"></p>
 					<button ng-if="showAddToCustomButton"
 						ng-click="addToCustom(persona)">
@@ -43,12 +51,19 @@
 					</button>
 				</li>
 			</ul>
-			<p ng-if="!personas.size">Waiting for or failed to retrive data. In order, try: waiting a few seconds, refreshing the page, rolling on the floor and crying.</p>
 		</div>
 		<div ng-controller="populationCtrl" id="game-mode-panel" class="panel">
-			<div ng-if="populations.size">
+			<div ng-if="data.populationsLoading"
+				class="panel--button panel--button__single
+					fa fa-spinner fa-spin fa-3x">
+				Loading...
+			</div>
+			<p ng-if="data.populationsError">
+				Failed to retrieve data. Try refreshing the page, or failing that, rolling on the floor	and crying.
+			</p>
+			<div ng-if="data.populations">
 				<select name=populationSelector ng-model="gameMode"
-					ng-options="mode for mode in populations.keys()|iterToArray"
+					ng-options="mode for mode in data.populations.keys()|iterToArray"
 					ng-disabled="editModeOn"
 					class="panel--button panel--button__single">
 					<option disabled="true" value="">-- Select Game Mode --</option>
@@ -60,14 +75,11 @@
 					off-text="Edit Population" on-text="Done Editing">
 				</button>
 				<ul class="persona-list">
-					<li ng-repeat="persona in populations.get(gameMode) track by $index + persona.name">
+					<li ng-repeat="persona in data.populations.get(gameMode) track by $index + persona.name">
 						<p persona="true"></p>
 						<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 					</li>
 				</ul>
-			</div>
-			<div ng-if="!populations.size">
-				<p>Waiting for or failed to retrive data. In order, try: waiting a few seconds, refreshing the page, rolling on the floor and crying.</p>
 			</div>
 		</div>
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">

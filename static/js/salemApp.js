@@ -24,7 +24,19 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
-	$scope.personas = personasFactory;
+	$scope.data = {
+		personasLoading: true,
+		personasError: null,
+		personas : null
+	}
+
+	personasFactory.then(function(result) {
+		$scope.data.personasLoading = false;
+		$scope.data.personas = result;
+	}, function(error) {
+		$scope.data.personasLoading = false;
+		$scope.data.personasError = error;
+	});
 
 	$scope.specRest = null;
 	$scope.teamRest = null;
@@ -82,15 +94,30 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 });
 
 app.controller("populationCtrl", function ($scope, $rootScope, populationsFactory) {
-	$scope.populations = populationsFactory;
+	$scope.data = {
+		populationsLoading: true,
+		populationsError: null,
+		populations : null
+	}
+
+	populationsFactory.then(function(result) {
+		$scope.data.populationsLoading = false;
+		$scope.data.populations = result;
+	}, function(error) {
+		$scope.data.populationsLoading = false;
+		$scope.data.populationsError = error;
+	});
+
+
+	// $scope.populations = populationsFactory;
 	$scope.gameMode = null;
 
 	$scope.$on('add to custom game', function(event, persona) {
-		$scope.populations.get('Custom').push(persona);
+		$scope.data.populations.get('Custom').push(persona);
 	})
 
 	$scope.removeFromCustom = function(index) {
-		$scope.populations.get('Custom').splice(index, 1);
+		$scope.data.populations.get('Custom').splice(index, 1);
 	}
 
 	$scope.broadcastEditMode = function (state) {

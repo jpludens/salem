@@ -39,51 +39,66 @@ app.factory('personasFactory', function($http) {
 		}
 	}
 
-	var personas = new Map();
-	$http({
+	var buildPersonas = function (personaJSON) {
+		var personas = new Map();
+		for (var i = 0; i < personaJSON.length; i++) {
+			var persona = new Persona(personaJSON[i]);
+			personas.set(persona.name, persona);
+		}
+		return personas;
+	}
+
+	return $http({
 		url: '/api/personas',
 		dataType: "json",
 		method: "GET"
 	}).then(function (response) {
-		for (var i = 0; i < response.data.length; i++) {
-			var persona = new Persona(response.data[i]);
-			personas.set(persona.name, persona);
-		}
+		result = buildPersonas(response.data)
+		return result;
 	}, function (response) {
 		// TODO: This is where I'd write some logs.
 		// IF I HAD ANY!!!
 		console.log(response);
+		return null;
 	});
 
-	return personas;
+	// return personas;
 });
 
 // Create role populations used by various game modes
 app.factory('populationsFactory', function($http, personasFactory) {
-	var populations = new Map();
-	var addMode = function (mode) {
-		var personaList = []
-		for (var i = 0; i < mode.population.length; i++) {
-			var persona = personasFactory.get(mode.population[i])
-			personaList.push(persona);
+	var personas = null; // Filled by promise later
+
+	var buildPopulations = function (gameModeData) {
+		var populations = new Map();
+		for (var i = 0; i < gameModeData.length; i++) {
+			var gameMode = gameModeData[i];
+			var personaList = [];
+			for (var j = 0; j < gameMode.population.length; j++) {
+				personaList.push(personas.get(gameMode.population[j]));
+			}
+			populations.set(gameMode.name, personaList);
 		}
-		populations.set(mode.name, personaList);
+		return populations
 	};
 
-	$http({
-		url: '/api/game_modes',
-		dataType: "json",
-		method: "GET"
-	}).then(function (response) {
-		for (var i = 0; i < response.data.length; i++) {
-			addMode(response.data[i]);
-		}
-	}, function (response) {
-		// TODO: This is where I'd write some logs.
-		// IF I HAD ANY!!!
-		console.log(response);
+	return personasFactory.then(function(result) {
+		personas = result;
+		return $http({
+			url: '/api/game_modes',
+			dataType: "json",
+			method: "GET"
+		}).then(function (response) {
+			return buildPopulations(response.data)
+		}, function (response) {
+			// TODO: This is where I'd write some logs.
+			// IF I HAD ANY!!!
+			console.log(response);
+			return null;
+		});
+	}, function (error) {
+		return null;
 	});
-	return populations;
 });
 
 app.factory('playerFactory', function() {
