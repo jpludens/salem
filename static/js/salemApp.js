@@ -27,7 +27,12 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 	$scope.data = {
 		personasLoading: true,
 		personasError: null,
-		personas : null
+		personas: null,
+		selectedSpecificity: null,
+		selectedTeam: null,
+		specificityValues: ["Roles", "Alignments"],
+		teamValues: ["Town", "Neutral", "Mafia"],
+		showAddToCustomButton: false
 	}
 
 	personasFactory.then(function(result) {
@@ -38,41 +43,33 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 		$scope.data.personasError = error;
 	});
 
-	$scope.specRest = null;
-	$scope.teamRest = null;
-	$scope.held = null;
-	$scope.showAddToCustomButton = false;
-	
-	$scope.specRestValues = ["Roles", "Alignments"];
-	$scope.teamRestValues = ["Town", "Neutral", "Mafia"]
-
-	$scope.updateSpecRest = function(clicked) {
+	$scope.updateSelectedSpecificity = function(clicked) {
 		// If what's already clicked is clicked again,
 		// unselect it and remove this restriction.
 		// Otherwise, change restriction to the new value.
 		if (clicked == null) {
 			return;
 		}
-		if (clicked == $scope.specRest) {
-			$scope.specRest = null;
+		if (clicked == $scope.data.selectedSpecificity) {
+			$scope.data.selectedSpecificity = null;
 		}
 		else {
-			$scope.specRest = clicked;
+			$scope.data.selectedSpecificity = clicked;
 		}
 	}
 
-	$scope.updateTeamRest = function(clicked) {
+	$scope.updateSelectedTeam = function(clicked) {
 		// If what's already clicked is clicked again,
 		// unselect it and remove this restriction.
 		// Otherwise, change restriction to the new value.
 		if (clicked == null) {
 			return;
 		}
-		if (clicked == $scope.teamRest) {
-			$scope.teamRest = null;
+		if (clicked == $scope.data.selectedTeam) {
+			$scope.data.selectedTeam = null;
 		}
 		else {
-			$scope.teamRest = clicked;
+			$scope.data.selectedTeam = clicked;
 		}
 	}
 
@@ -97,7 +94,8 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 	$scope.data = {
 		populationsLoading: true,
 		populationsError: null,
-		populations : null
+		populations: null,
+		selectedMode: null
 	}
 
 	populationsFactory.then(function(result) {
@@ -107,10 +105,6 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 		$scope.data.populationsLoading = false;
 		$scope.data.populationsError = error;
 	});
-
-
-	// $scope.populations = populationsFactory;
-	$scope.gameMode = null;
 
 	$scope.$on('add to custom game', function(event, persona) {
 		$scope.data.populations.get('Custom').push(persona);
@@ -129,7 +123,6 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 
 
 app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
-
 	$scope.data = {
 		playerRoster: playerRosterFactory,
 		graveyard: [],
@@ -149,7 +142,7 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		if (player == null) {
 			return;
 		}
-		player.alive = false;
+		player.kill();
 		$scope.data.graveyard.push(player);
 		var eventDescription = {
 			eventType: 'death',
@@ -166,7 +159,7 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		}
 		var index = $scope.data.graveyard.indexOf(player);
 		if (index > -1) {
-			player.alive = true;
+			player.revive();
 			$scope.data.graveyard.splice(index, 1);
 			var eventDescription = {
 				eventType: 'revival',
@@ -199,5 +192,7 @@ app.controller('gameEventLogCtrl', function($scope, $rootScope,
 });
 
 app.controller('salemClockCtrl', function($scope, salemClockFactory) {
-	$scope.clock = salemClockFactory;
+	$scope.data = {
+		clock: salemClockFactory
+	};
 });

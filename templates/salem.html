@@ -17,9 +17,9 @@
 				<div ng-class="'panel--button ' +
 					'panel--button__triple ' +
 					'panel--button__' +
-					(val == teamRest ? 'pressed persona-text--' + val.toLowerCase() : 'unpressed')"
-					ng-repeat="val in teamRestValues"
-					ng-click="updateTeamRest(val)">
+					(val == data.selectedTeam ? 'pressed persona-text--' + val.toLowerCase() : 'unpressed')"
+					ng-repeat="val in data.teamValues"
+					ng-click="updateSelectedTeam(val)">
 					{[val]}
 				</div>
 			</div>
@@ -27,23 +27,22 @@
 				<div ng-class="'panel--button ' +
 					'panel--button__double ' +
 					'panel--button__' +
-					(val == specRest ? 'pressed' : 'unpressed')"
-					ng-repeat="val in specRestValues"
-					ng-click="updateSpecRest(val)">
+					(val == data.selectedSpecificity ? 'pressed' : 'unpressed')"
+					ng-repeat="val in data.specificityValues"
+					ng-click="updateSelectedSpecificity(val)">
 					{[val]}
 				</div>
 			</div>
 			<div ng-if="data.personasLoading"
 				class="panel--button panel--button__single
 					fa fa-spinner fa-spin fa-3x">
-				Loading...
 			</div>
 			<p ng-if="data.personasError">
 				Failed to retrieve data. Try refreshing the page, or failing that, rolling on the floor	and crying.
 			</p>
 			<ul class="persona-list"
 				ng-if="data.personas">
-				<li ng-repeat="persona in data.personas.values()|iterToArray|specOnly:specRest|teamOnly:teamRest">
+				<li ng-repeat="persona in data.personas.values()|iterToArray|specOnly:data.selectedSpecificity|teamOnly:data.selectedTeam">
 					<p persona="true" link-to-wiki="true"></p>
 					<button ng-if="showAddToCustomButton"
 						ng-click="addToCustom(persona)">
@@ -56,26 +55,25 @@
 			<div ng-if="data.populationsLoading"
 				class="panel--button panel--button__single
 					fa fa-spinner fa-spin fa-3x">
-				Loading...
 			</div>
 			<p ng-if="data.populationsError">
 				Failed to retrieve data. Try refreshing the page, or failing that, rolling on the floor	and crying.
 			</p>
 			<div ng-if="data.populations">
-				<select name=populationSelector ng-model="gameMode"
+				<select name=populationSelector ng-model="data.selectedMode"
 					ng-options="mode for mode in data.populations.keys()|iterToArray"
 					ng-disabled="editModeOn"
 					class="panel--button panel--button__single">
 					<option disabled="true" value="">-- Select Game Mode --</option>
 				</select>
 				<button class="panel--button panel--button__single"
-					ng-show="gameMode == 'Custom'"
+					ng-show="data.selectedMode == 'Custom'"
 					jpl-toggle toggle-state="editModeOn"
 					toggle-action="broadcastEditMode(editModeOn)"
 					off-text="Edit Population" on-text="Done Editing">
 				</button>
 				<ul class="persona-list">
-					<li ng-repeat="persona in data.populations.get(gameMode) track by $index + persona.name">
+					<li ng-repeat="persona in data.populations.get(data.selectedMode) track by $index + persona.name">
 						<p persona="true"></p>
 						<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 					</li>
@@ -150,9 +148,9 @@
 		<div ng-controller="salemClockCtrl" class="panel">
 			<h2 class="panel--header">Salem Clock</h2>
 			<div class="clock-control">
-				<button ng-click="clock.recede()">Fall Back</button>
-				<span>{[clock.toString()]}</p>
-				<button ng-click="clock.advance()">Spring Forward</button>
+				<button ng-click="data.clock.recede()">Fall Back</button>
+				<p>{[data.clock.toString()]}</p>
+				<button ng-click="data.clock.advance()">Spring Forward</button>
 			</div>
 		</div>
 		<div ng-controller="gameEventLogCtrl" class="panel">
