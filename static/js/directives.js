@@ -34,7 +34,9 @@ app.directive("persona", function (salemTextColorFactory) {
 				return;
 			}
 
-			elem.addClass(salemTextColorFactory(scope.persona));
+			salemTextColorFactory.then(function (getColor) {
+				elem.addClass(getColor(scope.persona));
+			})
 			
 			// Handle 'Any'
 			if (scope.persona.specificity == 0) {

@@ -138,8 +138,15 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 		causesOfDeath: null,
 		selectedCauses: {},
 		victimName: null,
-		show: false
+		show: false,
+		getColor: function() {
+			return ''
+		}
 	};
+
+	salemTextColorFactory.then(function (result) {
+		$scope.data.getColor = result;
+	})
 
 	var initializeSelectedCauses = function () {
 		var causes = $scope.data.causesOfDeath
@@ -152,13 +159,6 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 		$scope.data.causesLoading = false;
 		$scope.data.causesOfDeath = causes;
 		initializeSelectedCauses();
-		for (var i = 0; i < causes.length; i++) {
-			// Apply color classes here rather than exposing the factory
-			// to the template and making it call repeatedly.
-			// (This made sense before creating/utilizing initializeSelectedCauses)
-			// (This now SHOULD be exposed, and class determined dynamically)
-			causes[i].colorClass = salemTextColorFactory(causes[i])
-		}
 	}, function(error) {
 		$scope.data.causesLoading = false;
 		$scope.data.causesError = error;

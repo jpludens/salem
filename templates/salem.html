@@ -89,7 +89,7 @@
 					ng-repeat="cause in data.causesOfDeath"
 					ng-class="'fa fa-' + cause.iconName + ' ' +
 						(data.selectedCauses[cause.name] ?
-						cause.colorClass : 'persona-text--executioner')"
+						data.getColor(cause) : 'persona-text--executioner')"
 					ng-click="toggleSelectionOfCause(cause)">
 				</button>
 				<button class="panel--button panel--button__single"

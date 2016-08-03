@@ -236,13 +236,7 @@ app.factory('causesOfDeathFactory', function($http) {
 });
 
 app.factory('salemTextColorFactory', function(personasFactory) {
-	personas = null;
-
-	personasFactory.then(function(result) {
-		personas = result;
-	});
-
-	return function(data) {
+	var colorFunction = function(data) {
 		if (personas == null || data == null) {
 			return;
 		}
@@ -279,5 +273,10 @@ app.factory('salemTextColorFactory', function(personasFactory) {
 		}
 		return colorClass;
 	}
+	personas = null;
+	return personasFactory.then(function(result) {
+		personas = result;
+		return colorFunction;
+	});
 
 })
