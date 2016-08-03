@@ -9,10 +9,19 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	var deathString = function() {
 		var player = this.data.player.name || '[An unknown player]';
 		var time = this.data.time.toString() || '[Time of death unknown]';
-		return player + ' died on ' + time;
+		if (this.data.causes) {
+			if (this.data.causes.length == 1) {
+				var cause = "(from being " + this.data.causes[0].name + "...)"
+			}
+			else {
+				var cause = "(from multiple causes...)"
+			}
+		}
+		return player + ' died on ' + time + ' ' + cause;
+
 	}
 	var deathObj = { toString: deathString };
-	gameEventProviderProvider.registerType('death', ['player', 'time'], deathObj);
+	gameEventProviderProvider.registerType('death', ['player', 'time', 'causes'], deathObj);
 
 	var reviveString = function() {
 		var player = this.data.player.name || '[An unknown player]';
@@ -121,6 +130,72 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 	}
 });
 
+app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
+	causesOfDeathFactory, salemTextColorFactory) {
+	$scope.data = {
+		causesLoading: true,
+		causesError: false,
+		causesOfDeath: null,
+		selectedCauses: {},
+		victimName: null,
+		show: false
+	};
+
+	var initializeSelectedCauses = function () {
+		var causes = $scope.data.causesOfDeath
+		for (var i = 0; i < causes.length; i++) {
+			$scope.data.selectedCauses[causes[i].name] = false;
+		}
+	}
+
+	causesOfDeathFactory.then( function(causes) {
+		$scope.data.causesLoading = false;
+		$scope.data.causesOfDeath = causes;
+		initializeSelectedCauses();
+		for (var i = 0; i < causes.length; i++) {
+			// Apply color classes here rather than exposing the factory
+			// to the template and making it call repeatedly.
+			// (This made sense before creating/utilizing initializeSelectedCauses)
+			// (This now SHOULD be exposed, and class determined dynamically)
+			causes[i].colorClass = salemTextColorFactory(causes[i])
+		}
+	}, function(error) {
+		$scope.data.causesLoading = false;
+		$scope.data.causesError = error;
+	});
+
+	$scope.toggleSelectionOfCause = function(cause) {
+		if (cause == null) {
+			return;
+		}
+		$scope.data.selectedCauses[cause.name] =
+			!$scope.data.selectedCauses[cause.name]
+	}
+
+	$scope.submitCauses = function() {
+		// Get the final tally of causes of death.
+		var causes = [];
+		for (var i = 0; i < $scope.data.causesOfDeath.length; i++) {
+			var cause = $scope.data.causesOfDeath[i];
+			if ($scope.data.selectedCauses[cause.name]) {
+				causes.push(cause)
+				$scope.data.selectedCauses[cause.name] = false;
+			}
+		}
+		// Publish findings
+		if (causes.length) {
+			$rootScope.$broadcast('Autopsy Report', causes);
+			initializeSelectedCauses();
+			$scope.data.show = false;
+			$scope.data.victimName = null;
+		}
+	}
+
+	$scope.$on('Prompt for Causes of Death', function (event, victimName) {
+		$scope.data.show = true;
+		$scope.data.victimName = victimName;
+	})
+});
 
 app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
 	$scope.data = {
@@ -128,6 +203,8 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		graveyard: [],
 		editingNameAt: -1
 	};
+
+	var victim = null;
 
 	$scope.switchEditingNameAt = function (playerNumber) {
 		if (playerNumber == $scope.data.editingNameAt) {
@@ -142,15 +219,8 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		if (player == null) {
 			return;
 		}
-		player.kill();
-		$scope.data.graveyard.push(player);
-		var eventDescription = {
-			eventType: 'death',
-			eventData: {
-				player: player
-			}
-		}
-		$rootScope.$broadcast('Game Event', eventDescription);
+		victim = player;
+		$rootScope.$broadcast('Prompt for Causes of Death', victim.name);
 	}
 
 	$scope.revivePlayer = function(player) {
@@ -170,6 +240,24 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 			$rootScope.$broadcast('Game Event', eventDescription);
 		}
 	}
+
+	$scope.$on("Autopsy Report", function(event, causesOfDeath) {
+		if (victim == null || causesOfDeath == null) {
+			return;
+		}
+		victim.kill();
+		$scope.data.graveyard.push(victim);
+		var eventDescription = {
+			eventType: 'death',
+			eventData: {
+				player: victim,
+				causes: causesOfDeath
+			}
+		}
+		$rootScope.$broadcast('Game Event', eventDescription);
+		victim = null;
+	});
+
 });
 
 app.controller('gameEventLogCtrl', function($scope, $rootScope,

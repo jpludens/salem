@@ -2,7 +2,7 @@
 
 app = angular.module("salemApp");
 
-app.directive("persona", function () {
+app.directive("persona", function (salemTextColorFactory) {
 	return {
 		scope: '@',
 		link: function (scope, elem, attrs) {
@@ -34,33 +34,20 @@ app.directive("persona", function () {
 				return;
 			}
 
+			elem.addClass(salemTextColorFactory(scope.persona));
 			
 			// Handle 'Any'
 			if (scope.persona.specificity == 0) {
 				elem.text("Any");
-				elem.addClass("persona-text--any");
 			}
 			// Handle exact role names
 			else if (scope.persona.specificity == 3) {
-				if (scope.persona.team == 'Neutral') {
-					// Replace space in 'Serial Killer' with a -
-					// Serial Killer is the only 2-word role except
-					// Vampire Hunter - which belongs to the town color class.
-					var classMod =
-						scope.persona.name.toLowerCase().replace(" ", "-")
-				}
-				else {
-					var classMod = scope.persona.team.toLowerCase();
-				}
-
 				elem.text(scope.persona.name);
-				elem.addClass("persona-text--" + classMod);
 			}
 			// Handle 'Random $Team' and '$Team $Category'
 			else {
 				// The more general information is team, so set that at top level
 				elem.text(scope.persona.team);
-				elem.addClass("persona-text--" + scope.persona.team.toLowerCase())
 
 				var catSpan = angular.element("<span></span>");
 				catSpan.text(scope.persona.category || "Random");
@@ -179,4 +166,37 @@ app.directive('jplFocus', function($timeout) {
 			);
 		}
 	}
+});
+
+// Googling for assistance with this led me here:
+// http://adamalbrecht.com/2013/12/12/creating-a-simple-modal-dialog-directive-in-angular-js/
+// modalDialog changed to modalBlock
+// template spaced out
+// removed closing tag (leaving responsibility for dismissal to controller)
+app.directive('modalBlock', function() {
+	return {
+		restrict: 'E',
+		scope: {
+			show: '='
+		},
+	replace: true, // Replace with the template below
+	transclude: true, // we want to insert custom content inside the directive
+	link: function(scope, element, attrs) {
+		scope.dialogStyle = {};
+			if (attrs.width)
+				scope.dialogStyle.width = attrs.width;
+			if (attrs.height)
+				scope.dialogStyle.height = attrs.height;
+			scope.hideModal = function() {
+				scope.show = false;
+			};
+		},
+		template:
+			"<div class='ng-modal' ng-show='show'>" +
+				"<div class='ng-modal-overlay' ng-click='hideModal()'></div>" +
+					"<div class='ng-modal-dialog' ng-style='dialogStyle'>" +
+						"<div class='ng-modal-dialog-content' ng-transclude></div>" +
+					"</div>" + 
+			"</div>"
+	};
 });

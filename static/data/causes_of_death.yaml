@@ -1,0 +1,39 @@
+- roleName: Arsonist
+  iconName: fire
+  name: burned
+- roleName: Serial Killer
+  iconName: eyedropper
+  name: stabbed
+- team: Mafia
+  iconName: crosshairs
+  name: targeted
+- roleName: Werewolf
+  iconName: paw
+  name: mauled
+- roleName: Jailor
+  iconName: key
+  name: executed
+- roleName: Veteran
+  iconName: warning
+  name: reciprocated
+- roleName: Vigilante
+  iconName: crosshairs
+  name: justiced
+- roleName: Vampire Hunter
+  iconName: heartbeat
+  name: staked
+- roleName: Jester
+  iconName: gift
+  name: pranked
+- iconName: frown-o
+  name: guilted
+- team: Town
+  iconName: users
+  name: hanged
+- iconName: suitcase
+  name: left
+
+  # If there is a team, use the team name!
+  # If there is a role name, and the role is town, use town color.
+  # If there is a role name, and the role is neutral, use that role's color.
+  # If there is no team or role name, use black.

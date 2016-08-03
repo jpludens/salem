@@ -210,3 +210,74 @@ app.factory('gameEventLogFactory', function() {
 	};
 	return eventLog;
 });
+
+app.factory('causesOfDeathFactory', function($http) {
+
+	var buildCauses = function (data) {
+		var causes = [];
+		for (var i = 0; i < data.length; i++) {
+			causes.push(data[i])
+		}
+		return causes
+	};
+
+	return $http({
+		url: '/api/causes_of_death',
+		dataType: "json",
+		method: "GET"
+	}).then(function (response) {
+		return buildCauses(response.data)
+	}, function (response) {
+		// TODO: This is where I'd write some logs.
+		// IF I HAD ANY!!!
+		console.log(response);
+		return null;
+	});
+});
+
+app.factory('salemTextColorFactory', function(personasFactory) {
+	personas = null;
+
+	personasFactory.then(function(result) {
+		personas = result;
+	});
+
+	return function(data) {
+		if (personas == null || data == null) {
+			return;
+		}
+
+		// data is not guaranteed to have any particular persona properties.
+		// Currently, this will identify the proper coloring as long as
+		// the team and/or roleName are part of the data argument.
+
+		// Get team and roleName. Use roleName to identify team if necessary,
+		// so team can be given preference later.
+		var team = data.team
+		var roleName = data.roleName
+		if (roleName && !team) {
+			team = personas.get(roleName).team
+		}
+
+		var colorClass = '';
+		if (team == "Town") {
+			colorClass = 'persona-text--town';
+		}
+		else if (team == "Mafia") {
+			colorClass = 'persona-text--mafia';
+		}
+		// For Neutrals, use color for roleName if specified
+		else if (roleName) {
+			colorClass = 'persona-text--' +
+				roleName.toLowerCase().replace(' ', '-');
+		}
+		else if (team == "Neutral") {
+			colorClass = 'persona-text--neutral';
+		}
+		else {
+			colorClass = 'persona-text--any';
+		}
+		return colorClass;
+	}
+
+})
