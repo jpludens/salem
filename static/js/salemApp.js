@@ -179,7 +179,6 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 			var cause = $scope.data.causesOfDeath[i];
 			if ($scope.data.selectedCauses[cause.name]) {
 				causes.push(cause)
-				$scope.data.selectedCauses[cause.name] = false;
 			}
 		}
 		// Publish findings
@@ -189,6 +188,11 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 			$scope.data.show = false;
 			$scope.data.victimName = null;
 		}
+	}
+
+	$scope.cancel = function() {
+		$scope.data.show = false;
+		initializeSelectedCauses();
 	}
 
 	$scope.$on('Prompt for Causes of Death', function (event, victimName) {
