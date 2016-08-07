@@ -1,51 +1,34 @@
 - roleName: Arsonist
   iconName: fire
-  name: burned
   note: Set on fire by an Arsonist # unconfirmed
 - roleName: Serial Killer
   iconName: eyedropper
-  name: stabbed
   note: Stabbed by a Serial Killer # unconfirmed
 - team: Mafia
   iconName: crosshairs
-  name: targeted
   note: Killed by a member of the Mafia # unconfirmed
 - roleName: Werewolf
   iconName: paw
-  name: mauled
   note: Mauled by a Werewolf # unconfirmed
 - roleName: Jailor
   iconName: key
-  name: executed
   note: Executed by the Jailor # unconfirmed
 - roleName: Veteran
   iconName: warning
   note: Killed by the Veteran # unconfirmed
-  name: reciprocated
 - roleName: Vigilante
   iconName: crosshairs
-  name: justiced
   note: Shot by a Vigilante # unconfirmed
 - roleName: Vampire Hunter
   iconName: heartbeat
-  name: staked
   note: Killed by a Vampire Hunter # unconfirmed
 - roleName: Jester
   iconName: gift
-  name: pranked
   note: Died of guilt over lynching the Jester # unconfirmed
 - iconName: frown-o
-  name: guilted
   note: Died of guilt over shooting an innocent # unconfirmed
 - team: Town
   iconName: users
-  name: hanged
   note: Lynched by popular vote
 - iconName: suitcase
-  name: left
   note: Apparently committed suicide # unconfirmed
-
-  # If there is a team, use the team name!
-  # If there is a role name, and the role is town, use town color.
-  # If there is a role name, and the role is neutral, use that role's color.
-  # If there is no team or role name, use black.

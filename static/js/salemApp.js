@@ -136,7 +136,7 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 		causesLoading: true,
 		causesError: false,
 		causesOfDeath: null,
-		selectedCauses: {},
+		selectedCauses: [],
 		victimName: null,
 		show: false,
 		getColor: function() {
@@ -148,17 +148,9 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 		$scope.data.getColor = result;
 	})
 
-	var initializeSelectedCauses = function () {
-		var causes = $scope.data.causesOfDeath
-		for (var i = 0; i < causes.length; i++) {
-			$scope.data.selectedCauses[causes[i].name] = false;
-		}
-	}
-
 	causesOfDeathFactory.then( function(causes) {
 		$scope.data.causesLoading = false;
 		$scope.data.causesOfDeath = causes;
-		initializeSelectedCauses();
 	}, function(error) {
 		$scope.data.causesLoading = false;
 		$scope.data.causesError = error;
@@ -168,23 +160,23 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 		if (cause == null) {
 			return;
 		}
-		$scope.data.selectedCauses[cause.name] =
-			!$scope.data.selectedCauses[cause.name]
+		var index = $scope.data.selectedCauses.indexOf(cause);
+		if (index >= 0) {
+			$scope.data.selectedCauses.splice(index, 1);
+		}
+		else {
+			$scope.data.selectedCauses.push(cause);
+		}
+	}
+
+	$scope.causeIsSelected = function (cause) {
+		return $scope.data.selectedCauses.indexOf(cause) >= 0;
 	}
 
 	$scope.submitCauses = function() {
-		// Get the final tally of causes of death.
-		var causes = [];
-		for (var i = 0; i < $scope.data.causesOfDeath.length; i++) {
-			var cause = $scope.data.causesOfDeath[i];
-			if ($scope.data.selectedCauses[cause.name]) {
-				causes.push(cause)
-			}
-		}
-		// Publish findings
-		if (causes.length) {
-			$rootScope.$broadcast('Autopsy Report', causes);
-			initializeSelectedCauses();
+		if ($scope.data.selectedCauses.length) {
+			$rootScope.$broadcast('Autopsy Report', $scope.data.selectedCauses);
+			$scope.data.selectedCauses = [];
 			$scope.data.show = false;
 			$scope.data.victimName = null;
 		}
@@ -192,7 +184,7 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 
 	$scope.cancel = function() {
 		$scope.data.show = false;
-		initializeSelectedCauses();
+		$scope.data.selectedCauses = [];
 	}
 
 	$scope.$on('Prompt for Causes of Death', function (event, victimName) {
