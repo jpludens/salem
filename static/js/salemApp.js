@@ -9,18 +9,18 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	var deathString = function() {
 		var player = this.data.player.name || '[An unknown player]';
 		var time = this.data.time.toString() || '[Time of death unknown]';
-		if (this.data.causes) {
-			if (this.data.causes.length == 1) {
-				var cause = "(from being " + this.data.causes[0].name + "...)"
-			}
-			else {
-				var cause = "(from multiple causes...)"
-			}
-		}
-		return player + ' died on ' + time + ' ' + cause;
-
+		return player + ' died on ' + time;
 	}
-	var deathObj = { toString: deathString };
+	var deathDetails = function() {
+		var details = [];
+		for (var i = 0; i < this.data.causes.length; i++) {
+			details.push(this.data.causes[i].note);
+		}
+		return details;
+	}
+	var deathObj = {
+		toString: deathString,
+		details: deathDetails};
 	gameEventProviderProvider.registerType('death', ['player', 'time', 'causes'], deathObj);
 
 	var reviveString = function() {

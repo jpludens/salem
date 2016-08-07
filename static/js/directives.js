@@ -82,6 +82,40 @@ app.directive("persona", function (salemTextColorFactory) {
 	}
 });
 
+app.directive('gameEvent', function() {
+	return {
+		restrict: 'E',
+		replace: true,
+		link: function(scope, elem, attrs) {
+			scope.hasDetails = (typeof scope.event.details !== 'undefined');
+			scope.showDetails = false;
+			scope.toggleDetails = function () {
+				scope.showDetails = !scope.showDetails;
+			}
+			scope.chevronDir = function() {
+				return scope.showDetails ?
+					'fa fa-chevron-down' :
+					'fa fa-chevron-right';
+			}
+		},
+		template:
+			"<div>" +
+				"<p name='event-string'>" +
+					"<span ng-if='!hasDetails' class='fa fa-minus'></span>" +
+					"<span ng-if='hasDetails' ng-click='toggleDetails()'" +
+						"ng-class=chevronDir()>" +
+					"</span>" +
+					"{[event.toString()]}" +
+				"</p>" +
+				"<ul name='event-details' ng-show='showDetails'>" +
+					"<li name='event-detail-item' ng-repeat='detail in event.details()'" +
+						"<p name='event-detail'>{[detail]}</p>" +
+					"</li>" +
+				"</ul>"+
+			"</div>"
+	}
+});
+
 app.directive('jplToggle', function() {
 	// Does not play nicely with:
 	// ng-click: Use toggle-action to achieve a similar effect.
@@ -181,18 +215,18 @@ app.directive('modalBlock', function() {
 		scope: {
 			show: '='
 		},
-	replace: true, // Replace with the template below
-	transclude: true, // we want to insert custom content inside the directive
-	link: function(scope, element, attrs) {
-		scope.dialogStyle = {};
-			if (attrs.width)
-				scope.dialogStyle.width = attrs.width;
-			if (attrs.height)
-				scope.dialogStyle.height = attrs.height;
-			scope.hideModal = function() {
-				scope.show = false;
-			};
-		},
+		replace: true, // Replace with the template below
+		transclude: true, // we want to insert custom content inside the directive
+		link: function(scope, element, attrs) {
+			scope.dialogStyle = {};
+				if (attrs.width)
+					scope.dialogStyle.width = attrs.width;
+				if (attrs.height)
+					scope.dialogStyle.height = attrs.height;
+				scope.hideModal = function() {
+					scope.show = false;
+				};
+			},
 		template:
 			"<div class='ng-modal' ng-show='show'>" +
 				"<div class='ng-modal-overlay' ng-click='hideModal()'></div>" +
@@ -200,5 +234,5 @@ app.directive('modalBlock', function() {
 						"<div class='ng-modal-dialog-content' ng-transclude></div>" +
 					"</div>" + 
 			"</div>"
-	};
+		};
 });

@@ -100,7 +100,7 @@
 					ng-click="cancel()">
 					He got better! (Cancel)
 				</button>
-			</model-block>
+			</modal-block>
 		</div>
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
 			<h2 class="panel--header">Player List</h2>
@@ -179,7 +179,7 @@
 			<h2 class="panel--header">Game Event Log</h2>
 			<ul class="event-log">
 				<li ng-repeat="event in data.events">
-					{[event.toString()]}
+					<game-event></game-event>
 				</li>
 			</ul>
 		</div>
