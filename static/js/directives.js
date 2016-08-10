@@ -2,86 +2,6 @@
 
 app = angular.module("salemApp");
 
-app.directive("persona", function (salemTextColorFactory) {
-	return {
-		scope: '@',
-		link: function (scope, elem, attrs) {
-
-			var getWikiUrl = function (persona) {
-				if (persona == null) {
-					return;
-				}
-
-				var wikiLinkTemplate = 'http://town-of-salem.wikia.com/wiki/';
-
-				if (persona.specificity == 0) {
-					return wikiLinkTemplate + "Roles";
-				}
-				else if (persona.specificity == 1) {
-					return wikiLinkTemplate + persona.team;
-				}
-				else if (persona.specificity == 2) {
-					return wikiLinkTemplate + persona.team + "_" +
-						persona.category;
-				}
-				else if (persona.specificity == 3) {
-					return wikiLinkTemplate + persona.name.replace(" ", "_")
-				}
-				return;
-			}
-
-			if (scope.persona == undefined) {
-				return;
-			}
-
-			salemTextColorFactory.then(function (getColor) {
-				elem.addClass(getColor(scope.persona));
-			})
-			
-			// Handle 'Any'
-			if (scope.persona.specificity == 0) {
-				elem.text("Any");
-			}
-			// Handle exact role names
-			else if (scope.persona.specificity == 3) {
-				elem.text(scope.persona.name);
-			}
-			// Handle 'Random $Team' and '$Team $Category'
-			else {
-				// The more general information is team, so set that at top level
-				elem.text(scope.persona.team);
-
-				var catSpan = angular.element("<span></span>");
-				catSpan.text(scope.persona.category || "Random");
-				catSpan.addClass("persona-text--category");
-
-				// Random $Team
-				if (scope.persona.specificity == 1) {
-					elem.prepend("&nbsp;")
-					elem.prepend(catSpan);
-				}
-				// $Team $Category
-				else {
-					elem.append("&nbsp;");
-					elem.append(catSpan);
-				}
-			}
-
-			if (attrs["linkToWiki"]) {
-				// Create an anchor tag linking to the appropriate wiki page
-				var anchor = angular.element("<a></a>")
-				var href = getWikiUrl(scope.persona);
-				anchor.attr('href', href);
-				anchor.attr('target', "_blank")
-				// Wrap the persona element in the anchor tag
-				elem.after(anchor);
-				elem.detach();
-				anchor.append(elem);
-			}
-		}
-	}
-});
-
 app.directive('gameEvent', function() {
 	return {
 		restrict: 'E',
@@ -100,16 +20,14 @@ app.directive('gameEvent', function() {
 		},
 		template:
 			"<div>" +
-				"<p name='event-string'>" +
-					"<span ng-if='!hasDetails' class='fa fa-minus'></span>" +
-					"<span ng-if='hasDetails' ng-click='toggleDetails()'" +
-						"ng-class=chevronDir()>" +
-					"</span>" +
-					"{[event.toString()]}" +
-				"</p>" +
+				"<span ng-if='!hasDetails' class='fa fa-minus'></span>" +
+				"<span ng-if='hasDetails' ng-click='toggleDetails()'" +
+					"ng-class=chevronDir()>" +
+				"</span>" +
+				"<span class='event-string' ng-bind-html='event.toString()|salemifyText'></span>" +
 				"<ul name='event-details' ng-show='showDetails'>" +
 					"<li name='event-detail-item' ng-repeat='detail in event.details()'" +
-						"<p name='event-detail'>{[detail]}</p>" +
+						"<p ng-bind-html='detail|salemifyText'></p>" +
 					"</li>" +
 				"</ul>"+
 			"</div>"

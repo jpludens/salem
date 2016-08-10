@@ -64,7 +64,6 @@ app.filter('teamOnly', function() {
 	}
 });
 
-
 // Used so app can do ng-repeat on a filtered iterable,
 // without any OTHER filters needing to worry about
 // whether input is an interable or an array.
@@ -110,3 +109,72 @@ app.filter('padNumberText', function() {
 		return numString;
 	}
 })
+
+app.filter('salemifyText', function($q, personasFactory, salemTextColorFactory) {
+	var colorsForWords = new Map();
+	colorsForWords.set("Town", "persona-text--town");
+	colorsForWords.set("Mafia", "persona-text--mafia");
+	colorsForWords.set("Neutral", "persona-text--neutral")
+	colorsForWords.set("Random", "persona-text--category");
+	colorsForWords.set("Protective", "persona-text--category");
+	colorsForWords.set("Support", "persona-text--category");
+	colorsForWords.set("Investigative", "persona-text--category");
+	colorsForWords.set("Killing", "persona-text--category");
+	colorsForWords.set("Deception", "persona-text--category");
+	colorsForWords.set("Evil", "persona-text--category");
+	colorsForWords.set("Benign", "persona-text--category");
+	colorsForWords.set("Chaos", "persona-text--category");
+
+	// Use the factories to set color classes for specific role names
+	var dataLoading = true;
+	var dataError = false;
+	let promises = {
+		personas: personasFactory,
+		colors: salemTextColorFactory
+	};
+	$q.all(promises).then(function(values) {
+		dataLoading = false;
+		var colorForRole = values.colors;
+		for (let [personaName, persona] of values.personas.entries()) {
+			if (persona.specificity == 3) {
+				colorsForWords.set(personaName, colorForRole(persona));
+			}
+		}
+	}, function(errors) {
+		dataLoading = false;
+		dataError = true;
+	});
+
+	function wrap(text, colorClass) {
+		return "<span class='" + colorClass + "'>" + text + "</span>";
+	}
+
+	var naiveCache = new Map();
+	function salemifyTextFilter(text) {
+		// Do nothing if persona has not loaded or failed to load.
+		if (dataLoading || dataError) return text;
+
+		var salemText = text;
+		// See if this exact text has previously been filtered
+		if (naiveCache.get(text)) {
+			salemText = naiveCache.get(text);
+		}
+		// See if the entirety of the text is just one keyword
+		else if (colorsForWords.get(text)) {
+			salemText = wrap(text, colorsForWords.get(text))
+		}
+		// The hard way, then. Wrap all instances of mapped words in a color.
+		else {
+			for (let [word, color] of colorsForWords.entries()) {
+				var search = word == 'Vampire' ? /Vampire(?! Hunter)/ : word;
+				var replace = wrap(word, color);
+				salemText = salemText.replace(search, replace);
+			}
+		}
+		naiveCache.set(text, salemText)
+		return salemText;
+	};
+
+	salemifyTextFilter.$stateful = true;
+	return salemifyTextFilter;
+});

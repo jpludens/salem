@@ -120,6 +120,10 @@ ul.event-log {
 	list-style-type: none;
 }
 
+.event-string {
+	margin-left: 4px;
+}
+
 /*************************
 	END Event Log styles
 *************************/

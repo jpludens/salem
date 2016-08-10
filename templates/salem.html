@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/salem.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 	<script type="text/javascript" src="{{ url_for('static', filename='js/angular.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/angular-sanitize.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/salemApp.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/filters.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/services.js') }}"></script>
@@ -43,7 +44,7 @@
 			<ul class="persona-list"
 				ng-if="data.personas">
 				<li ng-repeat="persona in data.personas.values()|iterToArray|specOnly:data.selectedSpecificity|teamOnly:data.selectedTeam">
-					<p persona="true" link-to-wiki="true"></p>
+					<p ng-bind-html='persona.name|salemifyText'></p>
 					<button ng-if="showAddToCustomButton"
 						ng-click="addToCustom(persona)">
 						Add to Custom Game
@@ -74,7 +75,7 @@
 				</button>
 				<ul class="persona-list">
 					<li ng-repeat="persona in data.populations.get(data.selectedMode) track by $index + persona.name">
-						<p persona="true"></p>
+						<p ng-bind-html='persona.name|salemifyText'></p>
 						<button ng-if="editModeOn" ng-click="removeFromCustom($index)">Remove</button>
 					</li>
 				</ul>

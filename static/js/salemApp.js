@@ -1,6 +1,6 @@
 // Untitled Salem Tools App
 
-var app = angular.module("salemApp", []);
+var app = angular.module("salemApp", ['ngSanitize']);
 
 app.config(function($interpolateProvider, gameEventProviderProvider) {
 	$interpolateProvider.startSymbol('{[');
