@@ -421,8 +421,9 @@ app.controller('trialCtrl', function($scope, $rootScope,
 	}
 
 	$scope.confirmAndLogVotes = function () {
+		console.log($scope.data.jury);
 		if ($scope.data.jury.votes.guilty.length >
-			$scope.data.jury.votes.innocent) {
+			$scope.data.jury.votes.innocent.length) {
 			var verdict = 'guilty';
 		}
 		else {
