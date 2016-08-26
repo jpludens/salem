@@ -13,6 +13,9 @@
 - roleName: Jailor
   iconName: key
   note: Executed by the Jailor # unconfirmed
+- roleName: Bodyguard
+  iconName: shield
+  note: Killed by a Bodyguard # unconfirmed
 - roleName: Veteran
   iconName: warning
   note: Killed by the Veteran # unconfirmed
@@ -26,7 +29,7 @@
   iconName: gift
   note: Died of guilt over lynching the Jester # unconfirmed
 - iconName: frown-o
-  note: Died of guilt over shooting an innocent # unconfirmed
+  note: Died of guilt over shooting a Town member # unconfirmed
 - team: Town
   iconName: users
   note: Lynched by popular vote

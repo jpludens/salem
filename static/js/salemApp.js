@@ -26,7 +26,7 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	var reviveString = function() {
 		var player = this.data.player.name || '[An unknown player]';
 		var time = this.data.time.toString() || '[Time of revival unknown]';
-		return player + ' was revivied on ' + time;
+		return player + ' was revived on ' + time;
 	}
 	var revivalObj = { toString: reviveString };
 	gameEventProviderProvider.registerType('revival', ['player', 'time'], revivalObj);

@@ -144,17 +144,31 @@ app.factory('salemClockFactory', function() {
 			if (number > 0) this.number = number;
 		},
 		advance: function() {
-			this.phase = this.phase == 'Day' ? 'Night' : 'Day';
-			this.number += 1;
+			if (this.phase == 'Day') {
+				this.phase = 'Night';
+			}
+			else if (this.phase == 'Night') {
+				this.number += 1;
+				this.phase = 'Day';
+			}
 		},
 		recede: function() {
-			this.phase = this.phase == 'Day' ? 'Night' : 'Day';
-			this.number -= this.number > 0 ? 1 : 0;
+			if (this.phase == 'Day' && this.number == 1) {
+				return;
+			}
+			else if (this.phase == 'Day') {
+				this.phase = 'Night';
+			}
+			else if (this.phase == 'Night') {
+				this.number -= 1;
+				this.phase = 'Day';
+			}
 		},
 		toString: function() {
 			return this.phase + ' ' + this.number;
 		},
 		getTime: function() {
+			// This seems silly. But I don't care to dig right now.
 			return {
 				phase: this.phase,
 				number: this.number,
