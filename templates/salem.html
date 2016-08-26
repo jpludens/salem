@@ -18,7 +18,7 @@
 				<div ng-class="'panel--button ' +
 					'panel--button__triple ' +
 					'panel--button__' +
-					(val == data.selectedTeam ? 'pressed persona-text--' + val.toLowerCase() : 'unpressed')"
+					(val == data.selectedTeam ? 'pressed salem-text--' + val.toLowerCase() : 'unpressed')"
 					ng-repeat="val in data.teamValues"
 					ng-click="updateSelectedTeam(val)">
 					{[val]}
@@ -81,7 +81,7 @@
 				</ul>
 			</div>
 		</div>
-		<div ng-controller="causesOfDeathCtrl">
+		<div ng-controller="autopsyCtrl">
 			<modal-block id="causes-of-death-selection"
 				show="data.show" width="600px" height="60%">
 				<h3>Select the cause(s) of {[data.victimName]}'s' death</h3>
@@ -89,17 +89,17 @@
 					ng-if="data.causesOfDeath"
 					ng-repeat="cause in data.causesOfDeath"
 					ng-class="'fa fa-' + cause.iconName + ' ' +
-						(causeIsSelected(cause) ?
-						data.getColor(cause) : 'persona-text--executioner')"
-					ng-click="toggleSelectionOfCause(cause)">
+						(isSelected(cause) ? data.getColor(cause) :
+						'salem-text--executioner')"
+					ng-click="toggleCause(cause)">
 				</button>
 				<button class="panel--button panel--button__single"
-					ng-click="submitCauses()"
+					ng-click="confirm()"
 					ng-disabled="data.selectedCauses.length == 0">
 					He's dead, Jim! (Confirm)
 				</button>
 				<button class="panel--button panel--button__single"
-					ng-click="cancel()">
+					ng-click="close()">
 					He got better! (Cancel)
 				</button>
 			</modal-block>
@@ -107,29 +107,25 @@
 		<div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
 			<h2 class="panel--header">Player List</h2>
 			<button class="panel--button panel--button__single"
-				ng-disabled="data.editingNameAt != -1"
 				jpl-toggle toggle-state="editAllNamesMode"
 				off-text="Edit All Names" on-text="Done Editing">
 			</button>
 			<ul class="player-list">
 				<li ng-repeat="player in data.playerRoster">
-					<button class="fa fa-remove" tabindex="-1"
-						ng-click="killPlayer(player)"
-						ng-disabled="!player.alive">
+					<button ng-click='playerKilled(player)'
+						ng-disabled='!player.alive'>
+						Killed
 					</button>
-					<button tabindex="-1"
-						ng-class="'fa ' + (data.editingNameAt == player.number ?
-						'fa-check' : 'fa-pencil')"
-						ng-disabled="editAllNamesMode ||
-						data.editingNameAt != -1 && data.editingNameAt != player.number"
-						ng-click="switchEditingNameAt(player.number)">
+					<button ng-click='playerAccused(player)'
+						ng-disabled='!player.alive'>
+						Accused
 					</button>
 					<span ng-class="player.alive ? 'player-list-number' : 'player-list-number__dead'">
 						{[(player.number)|padNumberText:2]}
 					</span>
 					<span
 						ng-class="player.alive ? 'player-name' : 'player-name__dead'"
-						ng-hide="editAllNamesMode || data.editingNameAt == player.number">
+						ng-hide="editAllNamesMode">
 						{[player.name]}
 					</span>
 					<input type="text"
@@ -139,20 +135,9 @@
 						jpl-focus focus-watch-property="editAllNamesMode" focus-select="true">
 					</input>
 					<input type="text"
-						ng-if="$first"
-						ng-show="data.editingNameAt == player.number"
-						ng-model="player.name"
-						ng-keypress="$event.which === 13 && switchEditingNameAt(player.number)"
-						jpl-focus focus-watch-property="data.editingNameAt"
-						focus-when-value-is="player.number" focus-select="true">
-					</input>
-					<input type="text"
 						ng-if="!$first"
-						ng-show="editAllNamesMode || data.editingNameAt == player.number"
-						ng-model="player.name"
-						ng-keypress="$event.which === 13 && !editAllNamesMode && switchEditingNameAt(player.number)"
-						jpl-focus focus-watch-property="data.editingNameAt"
-						focus-when-value-is="player.number" focus-select="true">
+						ng-show="editAllNamesMode"
+						ng-model="player.name">
 					</input>
 				</li>
 			</ul>
@@ -160,7 +145,7 @@
 			<ul class="player-list">
 				<li ng-repeat="player in data.graveyard">
 					<button class="fa fa-refresh"
-						ng-click="revivePlayer(player)">
+						ng-click="playerRevived(player)">
 					</button>
 					<span class="player-list-number">
 						{[player.number|padNumberText:2]}
@@ -168,6 +153,72 @@
 					<span class="player-name">{[player.name]}</span>
 				</li>
 			</ul>
+		</div>
+		<div ng-controller="accusationCtrl">
+			<modal-block id="accusationPanel"
+				show="data.show" width="600px" height="80%">
+				<h3>{[data.accused.name]} has some explaining to do...</h3>
+				<div ng-repeat="player in data.players">
+					<button
+						class="vote-button"
+						ng-click="toggleVote(player)""
+						ng-class="isVoting(player) ? 'vote-button--accusing' : ''">
+						Accusing
+					</button>
+					<span class="player-list-number">
+						{[(player.number)|padNumberText:2]}
+					</span>
+					<span class="player-name">
+						{[player.name]}
+					</span>
+				</div>
+				<button class="panel--button panel--button__single"
+					ng-click="confirmAndLogVotes()">
+					Confirm (Log Votes)
+				</button>
+				<button class="panel--button panel--button__single"
+					ng-click="confirmAndSkipVotes()">
+					Confirm (Skip Votes)
+				</button>
+				<button class="panel--button panel--button__single"
+					ng-click="close()">
+					Cancel
+				</button>
+			</modal-block>
+		</div>
+		<div ng-controller="trialCtrl">
+			<modal-block id="trialPanel"
+				show="data.show" width="600px" height="80%"
+				no-hide="true">
+				<h3>{[data.accused.name]} has been tried and judged.</h3>
+				<div ng-repeat="player in data.jury.players">
+					<button
+						ng-repeat="choice in data.choices"
+						ng-click="data.jury.setVote(player, choice)"
+						class="vote-button"
+						ng-class="data.jury.checkVote(player) == choice ? ('vote-button--selected salem-text--' + choice) : ''">
+						{[choice]}
+					</button>
+					<span class="player-list-number">
+						{[(player.number)|padNumberText:2]}
+					</span>
+					<span class="player-name">
+						{[player.name]}
+					</span>
+				</div>
+				<button class="panel--button panel--button__single"
+					ng-click="confirmAndLogVotes()">
+					Confirm (Log Votes)
+				</button>
+				<button class="panel--button panel--button__single"
+					ng-click="confirmAndSkipVotes('innocent')">
+					Innocent (Skip Votes)
+				</button>
+				<button class="panel--button panel--button__single"
+					ng-click="confirmAndSkipVotes('guilty')">
+					Guilty (Skip Votes)
+				</button>
+			</modal-block>
 		</div>
 		<div ng-controller="salemClockCtrl" class="panel">
 			<h2 class="panel--header">Salem Clock</h2>

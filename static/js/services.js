@@ -255,21 +255,21 @@ app.factory('salemTextColorFactory', function(personasFactory) {
 
 		var colorClass = '';
 		if (team == "Town") {
-			colorClass = 'persona-text--town';
+			colorClass += 'salem-text--town';
 		}
 		else if (team == "Mafia") {
-			colorClass = 'persona-text--mafia';
+			colorClass += 'salem-text--mafia';
 		}
 		// For Neutrals, use color for roleName if specified
 		else if (roleName) {
-			colorClass = 'persona-text--' +
+			colorClass += 'salem-text--' +
 				roleName.toLowerCase().replace(' ', '-');
 		}
 		else if (team == "Neutral") {
-			colorClass = 'persona-text--neutral';
+			colorClass += 'salem-text--neutral';
 		}
 		else {
-			colorClass = 'persona-text--any';
+			colorClass += 'salem-text--any';
 		}
 		return colorClass;
 	}
@@ -278,5 +278,69 @@ app.factory('salemTextColorFactory', function(personasFactory) {
 		personas = result;
 		return colorFunction;
 	});
+});
 
-})
+app.service('juryService', function (playerRosterFactory) {
+	this.clear = function () {
+		this.players = [];
+		this.votes = {
+			guilty: [],
+			innocent: [],
+			abstain: []
+		};
+	}
+	this.clear();
+
+	this.startTrialFor = function (accusedPlayer) {
+		this.clear();
+		for (var i = 0; i < playerRosterFactory.length; i++) {
+			var player = playerRosterFactory[i];
+			if (player.alive && player != accusedPlayer) {
+				this.players.push(player);
+				this.votes.abstain.push(player);
+			}
+		}
+	};
+
+	this.setVote = function(player, newVoteType) {
+		for (var voteType in this.votes) {
+			if (this.votes.hasOwnProperty(voteType)) {
+				var index = this.votes[voteType].indexOf(player);
+				if (index > -1) {
+					this.votes[voteType].splice(index, 1);
+				}
+			}
+		}
+		this.votes[newVoteType].push(player);
+	};
+
+	this.checkVote = function(player) {
+		for (var voteType in this.votes) {
+			if (this.votes.hasOwnProperty(voteType)) {
+				if (this.votes[voteType].indexOf(player) > -1) {
+					return voteType;
+				}
+			}
+		}
+		return null;
+	};
+
+	this.getTally = function() {
+		tally = [];
+		for (var voteType in this.votes) {
+			if (this.votes.hasOwnProperty(voteType)) {
+				voters = this.votes[voteType];
+				for (var i = 0; i < voters.length; i++) {
+					tally.push({
+						player: voters[i],
+						choice: voteType
+					});
+				}
+			}
+		}
+		tally.sort(function(a, b) {
+			return a.player.number - b.player.number;
+		});
+		return tally;
+	}
+});

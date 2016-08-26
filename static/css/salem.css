@@ -145,57 +145,101 @@ ul.event-log {
 **************************/
 
 
-/*************************************************
-	BEGIN Persona text color styles
+/**************************************************
+	BEGIN Salem color and font styles
 	These colors conform to Town of Salem styling.
 	Hex values were identified by page source from
-	town-of-salem.wikia.com
-*************************************************/
-.persona-text--any {
-	/* Should be white, but doesn't show up well */
+	town-of-salem.wikia.com, in conjunction when
+	necessary with the helpful color picker tool at
+	http://html-color-codes.info/colors-from-image/
+**************************************************/
+.salem-text {
+	font-weight: bold;
 }
-.persona-text--category {
+.salem-text--any {
+	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
+	color: white;
+}
+.salem-text--category {
 	color: #49A9D0;
 }
-.persona-text--town {
+.salem-text--town {
 	color: #45BF00;
 }
-.persona-text--mafia {
+.salem-text--mafia {
 	color: #DD0000;
 }
-.persona-text--neutral {
+.salem-text--neutral {
 	color: #ACACAC;
 }
-.persona-text--amnesiac {
+.salem-text--amnesiac {
 	color: #4FF0E8;
 }
-.persona-text--arsonist {
+.salem-text--arsonist {
 	color: #EE7600;
 }
-.persona-text--executioner {
+.salem-text--executioner {
 	color: #ACACAC;
 }
-.persona-text--jester {
+.salem-text--jester {
 	color: #F49FD0;
 }
-.persona-text--serial-killer {
+.salem-text--serial-killer {
 	color: #000080;
 }
-.persona-text--survivor {
+.salem-text--survivor {
 	color: #C8C800;
 }
-.persona-text--vampire {
+.salem-text--vampire {
 	color: #7B8867;
 }
-.persona-text--werewolf {
+.salem-text--werewolf {
 	color: #744A26;
 }
-.persona-text--witch {
+.salem-text--witch {
 	color: #BF5FFF;
 }
-/********************************
-	END Persona text color styles
-********************************/
+.salem-text--innocent {
+	color: #66FF66;
+}
+.salem-text--guilty {
+	color: #FF0000;
+}
+.salem-text--abstain {
+	color: #66CCFF;
+}
+
+.vote-button {
+	text-transform: capitalize;
+}
+.vote-button--selected {
+	font-weight: bold;
+}
+.vote-button--accusing {
+	font-weight: bold;
+	color: darkgreen;
+}
+/**********************************
+	END Salem color and font styles
+***********************************/
+
+
+/***************************
+	BEGIN Vote button styles
+***************************/
+.vote-button {
+	text-transform: capitalize;
+}
+.vote-button--selected {
+	font-weight: bold;
+}
+.vote-button--accusing {
+	font-weight: bold;
+	color: darkgreen;
+}
+/*************************
+	END Vote button styles
+*************************/
 
 
 /*********************
@@ -219,6 +263,7 @@ ul.event-log {
 	z-index:10000;
 	position: fixed;
 	width: 50%; /* Default */
+	overflow-y: scroll;
 
 /* Center the dialog */
 	top: 50%;

@@ -30,6 +30,54 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 	}
 	var revivalObj = { toString: reviveString };
 	gameEventProviderProvider.registerType('revival', ['player', 'time'], revivalObj);
+
+	var accuseString = function() {
+		var name = this.data.accused.name;
+		var time = this.data.time.toString();
+		return name + ' was put on trial on ' + time + '...';
+	}
+	var accuseDetails = function() {
+		var details = [];
+		for (var i = 0; i < this.data.accusers.length; i++) {
+			details.push(this.data.accusers[i].name + ' voted against');
+		}
+		return details;
+	}
+	var accuseObj = {
+		toString: accuseString,
+		details: accuseDetails
+	}
+	gameEventProviderProvider.registerType('accusation',
+		['accused', 'accusers', 'time'], accuseObj);
+
+	var trialString = function() {
+		var name = this.data.accused.name;
+		var verdict = this.data.verdict;
+		var time = this.data.time.toString();
+		return name + ' was found ' + verdict + ' on ' + time;
+	}
+	var trialDetails = function() {
+		details = [];
+		for (var i = 0; i < this.data.tally.length; i++) {
+			var detail = this.data.tally[i].player.name;
+			var choice = this.data.tally[i].choice;
+			if (choice == 'abstain') {
+				detail += ' abstained';
+			}
+			else {
+				detail += ' voted ' + choice;
+			}
+			details.push(detail);
+		}
+		return details;
+	}
+	var trialObj = {
+		toString: trialString,
+		details: trialDetails
+	}
+	gameEventProviderProvider.registerType('trial',
+		['accused', 'verdict', 'time', 'tally'], trialObj)
+
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
@@ -130,19 +178,21 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 	}
 });
 
-app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
+app.controller("autopsyCtrl", function ($scope, $rootScope,
 	causesOfDeathFactory, salemTextColorFactory) {
 	$scope.data = {
 		causesLoading: true,
 		causesError: false,
 		causesOfDeath: null,
 		selectedCauses: [],
-		victimName: null,
+		victim: null,
 		show: false,
 		getColor: function() {
 			return ''
 		}
 	};
+
+	var lynchCause = null;
 
 	salemTextColorFactory.then(function (result) {
 		$scope.data.getColor = result;
@@ -151,75 +201,108 @@ app.controller("causesOfDeathCtrl", function ($scope, $rootScope,
 	causesOfDeathFactory.then( function(causes) {
 		$scope.data.causesLoading = false;
 		$scope.data.causesOfDeath = causes;
+		// Find the lynch cause now, to rubberstamp execution autopsies later.
+		for (var i = 0; i < causes.length; i++) {
+			if (causes[i].team == 'Town') {
+				lynchCause = causes[i];
+			}
+		}
 	}, function(error) {
 		$scope.data.causesLoading = false;
 		$scope.data.causesError = error;
 	});
 
-	$scope.toggleSelectionOfCause = function(cause) {
+	var reset = function() {
+		$scope.data.victim = null;
+		$scope.data.selectedCauses = [];
+	};
+
+	var setup = function (victim) {
+		$scope.data.victim = victim;
+	};
+
+	$scope.isSelected = function (cause) {
+		return $scope.data.selectedCauses.indexOf(cause) >= 0;
+	};
+
+	$scope.toggleCause = function(cause) {
 		if (cause == null) {
 			return;
 		}
 		var index = $scope.data.selectedCauses.indexOf(cause);
-		if (index >= 0) {
+		if (index > -1) {
 			$scope.data.selectedCauses.splice(index, 1);
 		}
 		else {
 			$scope.data.selectedCauses.push(cause);
 		}
-	}
+	};
 
-	$scope.causeIsSelected = function (cause) {
-		return $scope.data.selectedCauses.indexOf(cause) >= 0;
-	}
-
-	$scope.submitCauses = function() {
-		if ($scope.data.selectedCauses.length) {
-			$rootScope.$broadcast('Autopsy Report', $scope.data.selectedCauses);
-			$scope.data.selectedCauses = [];
-			$scope.data.show = false;
-			$scope.data.victimName = null;
+	$scope.confirm = function() {
+		var autopsy = {
+			player: $scope.data.victim,
+			causes: []
 		}
-	}
+		for (var i = 0; i < $scope.data.selectedCauses.length; i++) {
+			autopsy.causes.push($scope.data.selectedCauses[i]);
+		}
+		$rootScope.$broadcast('autopsyConfirm', autopsy);
+		$scope.close();
+	};
 
-	$scope.cancel = function() {
+	$scope.close = function() {
+		reset();
 		$scope.data.show = false;
-		$scope.data.selectedCauses = [];
-	}
+	};
 
-	$scope.$on('Prompt for Causes of Death', function (event, victimName) {
+	$scope.$on('autopsyStart', function (event, victim) {
+		reset();
+		setup(victim);
 		$scope.data.show = true;
-		$scope.data.victimName = victimName;
-	})
+	});
+
+	$scope.$on('obviousSuicide', function (event, deceased) {
+		// Admittedly not exactly clean, but this allows
+		// every other controller to ignore causes of death.
+		var autopsy = {
+			player: deceased,
+			causes: [lynchCause]
+		};
+		$rootScope.$broadcast('autopsyConfirm', autopsy);
+	});
 });
 
-app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFactory) {
+app.controller("playerRosterCtrl", function ($scope, $rootScope,
+	playerRosterFactory) {
 	$scope.data = {
 		playerRoster: playerRosterFactory,
 		graveyard: [],
-		editingNameAt: -1
 	};
 
-	var victim = null;
-
-	$scope.switchEditingNameAt = function (playerNumber) {
-		if (playerNumber == $scope.data.editingNameAt) {
-			$scope.data.editingNameAt = -1;
-		}
-		else {
-			$scope.data.editingNameAt = playerNumber;
-		}
+	var killPlayer = function (player) {
+		player.kill();
+		$scope.data.graveyard.push(player);
 	}
 
-	$scope.killPlayer = function(player) {
+	$scope.playerKilled = function(player) {
 		if (player == null) {
 			return;
 		}
-		victim = player;
-		$rootScope.$broadcast('Prompt for Causes of Death', victim.name);
+		$rootScope.$broadcast('autopsyStart', player);
 	}
 
-	$scope.revivePlayer = function(player) {
+	$scope.playerAccused = function (player) {
+		if (player == null) {
+			return;
+		}
+		$rootScope.$broadcast('accusationStart', player);
+	}
+
+	$scope.playerQuit = function(player) {
+		player.leave();
+	}
+
+	$scope.playerRevived = function(player) {
 		if (player == null) {
 			return;
 		}
@@ -227,33 +310,149 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope, playerRosterFac
 		if (index > -1) {
 			player.revive();
 			$scope.data.graveyard.splice(index, 1);
-			var eventDescription = {
-				eventType: 'revival',
-				eventData: {
-					player: player
-				}
-			}
-			$rootScope.$broadcast('Game Event', eventDescription);
+			$rootScope.$broadcast('revival', {player: player});
 		}
 	}
 
-	$scope.$on("Autopsy Report", function(event, causesOfDeath) {
-		if (victim == null || causesOfDeath == null) {
-			return;
-		}
-		victim.kill();
-		$scope.data.graveyard.push(victim);
-		var eventDescription = {
-			eventType: 'death',
-			eventData: {
-				player: victim,
-				causes: causesOfDeath
+	$scope.$on("autopsyConfirm", function(event, autopsy) {
+		killPlayer(autopsy.player)
+	});
+});
+
+app.controller('accusationCtrl', function($scope, $rootScope,
+	playerRosterFactory) {
+	$scope.data = {
+		accused: null,
+		players: [],
+		accusers: [],
+		show: false
+	}
+
+	var reset = function() {
+		$scope.data.accused = null;
+		$scope.data.players = [];
+		$scope.data.accusers = [];
+	}
+
+	var setup = function(accused) {
+		$scope.data.accused = accused;
+		for (var i = 0; i < playerRosterFactory.length; i ++) {
+			var player = playerRosterFactory[i];
+			if (player.alive && player != accused) {
+				$scope.data.players.push(player);
 			}
 		}
-		$rootScope.$broadcast('Game Event', eventDescription);
-		victim = null;
-	});
+	}
 
+	$scope.isVoting = function(player) {
+		return $scope.data.accusers.indexOf(player) > -1
+	}
+
+	$scope.toggleVote = function (player) {
+		if (player == null || $scope.data.players.index == -1) {
+			return;
+		}
+		var index = $scope.data.accusers.indexOf(player);
+		if (index > -1) {
+			$scope.data.accusers.splice(index, 1);
+		}
+		else {
+			$scope.data.accusers.push(player);
+		}
+	}
+
+	$scope.confirmAndLogVotes = function () {
+		accusation = {
+			accused: $scope.data.accused,
+			accusers : []
+		}
+		for (var i = 0; i < $scope.data.accusers.length; i++) {
+			accusation.accusers.push($scope.data.accusers[i]);
+		}
+		$rootScope.$broadcast('accusationConfirm', accusation);
+		$rootScope.$broadcast('trialStart', accusation.accused);
+		$scope.close();
+	}
+
+	$scope.confirmAndSkipVotes = function () {
+		var accusation = {
+			accused: $scope.data.accused,
+			accusers: []
+		}
+		$rootScope.$broadcast('accusationConfirm', accusation);
+		$rootScope.$broadcast('trialStart', accusation.accused);
+		$scope.close();
+	}
+
+	$scope.close = function() {
+		reset();
+		$scope.data.show = false;
+	}
+
+	$scope.$on('accusationStart', function (event, accusedPlayer) {
+		reset();
+		setup(accusedPlayer);
+		$scope.data.show = true;
+	});
+});
+
+app.controller('trialCtrl', function($scope, $rootScope,
+	playerRosterFactory, juryService) {
+	$scope.data = {
+		choices: ['guilty', 'abstain', 'innocent'],
+		accused: null,
+		jury: juryService,
+		show: false
+	}
+
+	var reset = function () {
+		$scope.data.accused = null;
+		$scope.data.jury.clear();
+	}
+
+	var setup = function (accused) {
+		$scope.data.accused = accused;
+		$scope.data.jury.startTrialFor(accused);
+	}
+
+	$scope.close = function () {
+		reset();
+		$scope.data.show = false;
+	}
+
+	$scope.confirmAndLogVotes = function () {
+		if ($scope.data.jury.votes.guilty.length >
+			$scope.data.jury.votes.innocent) {
+			var verdict = 'guilty';
+		}
+		else {
+			var verdict = 'innocent';
+		}
+
+		var trial = {
+			accused: $scope.data.accused,
+			verdict: verdict,
+			tally: $scope.data.jury.getTally()
+		};
+		$rootScope.$broadcast('trialConfirm', trial);
+		$scope.close();
+	}
+
+	$scope.confirmAndSkipVotes = function (verdict) {
+		var trial = {
+			accused: $scope.data.accused,
+			verdict: verdict,
+			tally: []
+		};
+		$rootScope.$broadcast('trialConfirm', trial);
+		$scope.close();
+	}
+
+	$scope.$on('trialStart', function (event, accused) {
+		reset();
+		setup(accused);
+		$scope.data.show = true;
+	});
 });
 
 app.controller('gameEventLogCtrl', function($scope, $rootScope,
@@ -265,13 +464,29 @@ app.controller('gameEventLogCtrl', function($scope, $rootScope,
 		events: eventLog.entries
 	};
 
-	$scope.$on('Game Event', function(event, eventDescription) {
-		// Before you squint to check, the 'event' is not used here. :)
-		eventDescription.eventData.time = clock.getTime();
-		var gameEvent = gameEventProvider.create(
-			eventDescription.eventType,
-			eventDescription.eventData);
+	var addEvent = function (eventType, eventData) {
+		eventData.time = salemClockFactory.getTime();
+		var gameEvent = gameEventProvider.create(eventType, eventData)	;
 		eventLog.log(gameEvent);
+	};
+
+	$scope.$on('autopsyConfirm', function(event, eventData) {
+		addEvent('death', eventData);
+	});
+
+	$scope.$on('revival', function(event, eventData) {
+		addEvent('revival', eventData);
+	});
+
+	$scope.$on('accusationConfirm', function(event, eventData) {
+		addEvent('accusation', eventData);
+	});
+
+	$scope.$on('trialConfirm', function(event, eventData) {
+		addEvent('trial', eventData);
+		if (eventData.verdict == 'guilty') {
+			$rootScope.$broadcast('obviousSuicide', eventData.accused);
+		}
 	});
 });
 

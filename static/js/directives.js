@@ -7,7 +7,8 @@ app.directive('gameEvent', function() {
 		restrict: 'E',
 		replace: true,
 		link: function(scope, elem, attrs) {
-			scope.hasDetails = (typeof scope.event.details !== 'undefined');
+			scope.hasDetails = (typeof scope.event.details !== 'undefined' &&
+				scope.event.details().length);
 			scope.showDetails = false;
 			scope.toggleDetails = function () {
 				scope.showDetails = !scope.showDetails;
@@ -142,7 +143,9 @@ app.directive('modalBlock', function() {
 				if (attrs.height)
 					scope.dialogStyle.height = attrs.height;
 				scope.hideModal = function() {
-					scope.show = false;
+					if (!attrs.noHide) {
+						scope.show = false;
+					}
 				};
 			},
 		template:

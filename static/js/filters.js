@@ -112,18 +112,23 @@ app.filter('padNumberText', function() {
 
 app.filter('salemifyText', function($q, personasFactory, salemTextColorFactory) {
 	var colorsForWords = new Map();
-	colorsForWords.set("Town", "persona-text--town");
-	colorsForWords.set("Mafia", "persona-text--mafia");
-	colorsForWords.set("Neutral", "persona-text--neutral")
-	colorsForWords.set("Random", "persona-text--category");
-	colorsForWords.set("Protective", "persona-text--category");
-	colorsForWords.set("Support", "persona-text--category");
-	colorsForWords.set("Investigative", "persona-text--category");
-	colorsForWords.set("Killing", "persona-text--category");
-	colorsForWords.set("Deception", "persona-text--category");
-	colorsForWords.set("Evil", "persona-text--category");
-	colorsForWords.set("Benign", "persona-text--category");
-	colorsForWords.set("Chaos", "persona-text--category");
+	colorsForWords.set("Any", "salem-text--any");
+	colorsForWords.set("Town", "salem-text--town");
+	colorsForWords.set("Mafia", "salem-text--mafia");
+	colorsForWords.set("Neutral", "salem-text--neutral")
+	colorsForWords.set("Random", "salem-text--category");
+	colorsForWords.set("Protective", "salem-text--category");
+	colorsForWords.set("Support", "salem-text--category");
+	colorsForWords.set("Investigative", "salem-text--category");
+	colorsForWords.set("Killing", "salem-text--category");
+	colorsForWords.set("Deception", "salem-text--category");
+	colorsForWords.set("Evil", "salem-text--category");
+	colorsForWords.set("Benign", "salem-text--category");
+	colorsForWords.set("Chaos", "salem-text--category");
+	colorsForWords.set("guilty", "salem-text--guilty");
+	colorsForWords.set("innocent", "salem-text--innocent");
+	colorsForWords.set("abstain", "salem-text--abstain");
+	colorsForWords.set("abstained", "salem-text--abstain");
 
 	// Use the factories to set color classes for specific role names
 	var dataLoading = true;
@@ -146,7 +151,8 @@ app.filter('salemifyText', function($q, personasFactory, salemTextColorFactory) 
 	});
 
 	function wrap(text, colorClass) {
-		return "<span class='" + colorClass + "'>" + text + "</span>";
+		return "<span class='salem-text " +
+			colorClass + "'>" + text + "</span>";
 	}
 
 	var naiveCache = new Map();
@@ -166,7 +172,13 @@ app.filter('salemifyText', function($q, personasFactory, salemTextColorFactory) 
 		// The hard way, then. Wrap all instances of mapped words in a color.
 		else {
 			for (let [word, color] of colorsForWords.entries()) {
-				var search = word == 'Vampire' ? /Vampire(?! Hunter)/ : word;
+				var search = word;
+				if (word == 'Vampire') {
+					search = /Vampire(?! Hunter)/;
+				}
+				else if (word == 'abstain') {
+					search = /abstain(?!ed)/;
+				}
 				var replace = wrap(word, color);
 				salemText = salemText.replace(search, replace);
 			}
