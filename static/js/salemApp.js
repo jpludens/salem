@@ -1,12 +1,30 @@
 // Untitled Salem Tools App
+/* Perform configuration for the app, and define its controllers.
+Config steps:
+	Change angular binding from curly-curly to curly-square.
+	Register event types: death, revival, accusation, trial
+Controllers:
+	personasCtrl
+	populationCtrl
+	playerRosterCtrl
+	autospyCtrl
+	accusationCtrl
+	trialCtrl
+	gameEventCtrl
+	salemClockCtrl */
 
 var app = angular.module("salemApp", ['ngSanitize']);
 
-app.config(function($interpolateProvider, gameEventProviderProvider) {
-	$interpolateProvider.startSymbol('{[');
-	$interpolateProvider.endSymbol(']}');
-
-	var deathString = function() {
+/* Register event types.
+All of these helper functions accept the gameEventProviderProvider as a
+dependency, and call its registerType method to register an event type.
+Registration for all includes a summary method that returns a string, and most
+also define a details method returning a list of strings. */
+var registerDeathEvent = function(eventProvider) {
+	/* Register an event type 'death' and properties 'player', 'time', and
+	'causes'. Summary string includes player name and time of death. Details
+	strings describe the various causes of death. */
+	var deathSummary = function() {
 		var player = this.data.player.name || '[An unknown player]';
 		var time = this.data.time.toString() || '[Time of death unknown]';
 		return player + ' died on ' + time;
@@ -19,18 +37,27 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 		return details;
 	}
 	var deathObj = {
-		toString: deathString,
+		summary: deathSummary,
 		details: deathDetails};
-	gameEventProviderProvider.registerType('death', ['player', 'time', 'causes'], deathObj);
+	eventProvider.registerType('death', ['player', 'time', 'causes'], deathObj);
+};
 
+var registerReviveEvent = function(eventProvider) {
+	/* Register an event type 'revival' and properties 'player', and 'time'.
+	Summary string includes both properties. No details method is provided. */
 	var reviveString = function() {
 		var player = this.data.player.name || '[An unknown player]';
 		var time = this.data.time.toString() || '[Time of revival unknown]';
 		return player + ' was revived on ' + time;
 	}
-	var revivalObj = { toString: reviveString };
-	gameEventProviderProvider.registerType('revival', ['player', 'time'], revivalObj);
+	var revivalObj = { summary: reviveString };
+	eventProvider.registerType('revival', ['player', 'time'], revivalObj);
+};
 
+var registerAccuseEvent = function(eventProvider) {
+	/* Register an event type 'accusation' and properties 'accused',
+	'accusers', and 'time'. Summary string includes name of accused and time.
+	Details	strings include the name of an accuser. */
 	var accuseString = function() {
 		var name = this.data.accused.name;
 		var time = this.data.time.toString();
@@ -44,12 +71,17 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 		return details;
 	}
 	var accuseObj = {
-		toString: accuseString,
+		summary: accuseString,
 		details: accuseDetails
 	}
-	gameEventProviderProvider.registerType('accusation',
+	eventProvider.registerType('accusation',
 		['accused', 'accusers', 'time'], accuseObj);
+};
 
+var registerTrialEvent = function(eventProvider) {
+	/* Register an event type 'trial' and properties 'accused', 'verdict'
+	'time', and 'tally'. Summary string includes name of accused, verdict, and
+	time. Details strings include a name and vote from the tally. */
 	var trialString = function() {
 		var name = this.data.accused.name;
 		var verdict = this.data.verdict;
@@ -72,15 +104,31 @@ app.config(function($interpolateProvider, gameEventProviderProvider) {
 		return details;
 	}
 	var trialObj = {
-		toString: trialString,
+		summary: trialString,
 		details: trialDetails
 	}
-	gameEventProviderProvider.registerType('trial',
+	eventProvider.registerType('trial',
 		['accused', 'verdict', 'time', 'tally'], trialObj)
+};
+
+app.config(function($interpolateProvider, gameEventProviderProvider) {
+	/* Alter the symbols for bindings so AngularJS and Flask can play nicely. */
+	$interpolateProvider.startSymbol('{[');
+	$interpolateProvider.endSymbol(']}');
+
+	/* Call helper functions to register game events. */
+	registerDeathEvent(gameEventProviderProvider);
+	registerReviveEvent(gameEventProviderProvider);
+	registerAccuseEvent(gameEventProviderProvider);
+	registerTrialEvent(gameEventProviderProvider);
 
 });
 
 app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
+	/* Controls a list of all defined personas, and user settings for desired
+	teams or specificities (meaning, specific roles vs general categories).
+	Listens for requests from populationCtrl to allow users to select roles to
+	be added to population lists, and broadcasts any such selections. */
 	$scope.data = {
 		personasLoading: true,
 		personasError: null,
@@ -148,6 +196,9 @@ app.controller("personasCtrl", function ($scope, $rootScope, personasFactory) {
 });
 
 app.controller("populationCtrl", function ($scope, $rootScope, populationsFactory) {
+	/* Controls the list of game modes and roles in those modes. Relies on
+	personasCtrl for adding roles to the Custom mode, by broadcasting requests
+	start and stop asking for additions, and listening for those additions. */
 	$scope.data = {
 		populationsLoading: true,
 		populationsError: null,
@@ -178,8 +229,62 @@ app.controller("populationCtrl", function ($scope, $rootScope, populationsFactor
 	}
 });
 
+app.controller("playerRosterCtrl", function ($scope, $rootScope,
+	playerRosterFactory) {
+	/* Controls the list of players, events involving them, and information
+	about them. Sends requests to other controllers for collecting data for
+	those events or pieces of information. */
+	$scope.data = {
+		playerRoster: playerRosterFactory,
+		graveyard: [],
+	};
+
+	var killPlayer = function (player) {
+		player.kill();
+		$scope.data.graveyard.push(player);
+	}
+
+	$scope.playerKilled = function(player) {
+		if (player == null) {
+			return;
+		}
+		$rootScope.$broadcast('autopsyStart', player);
+	}
+
+	$scope.playerAccused = function (player) {
+		if (player == null) {
+			return;
+		}
+		$rootScope.$broadcast('accusationStart', player);
+	}
+
+	$scope.playerQuit = function(player) {
+		player.leave();
+	}
+
+	$scope.playerRevived = function(player) {
+		if (player == null) {
+			return;
+		}
+		var index = $scope.data.graveyard.indexOf(player);
+		if (index > -1) {
+			player.revive();
+			$scope.data.graveyard.splice(index, 1);
+			$rootScope.$broadcast('revival', {player: player});
+		}
+	}
+
+	$scope.$on("autopsyConfirm", function(event, autopsy) {
+		killPlayer(autopsy.player)
+	});
+});
+
 app.controller("autopsyCtrl", function ($scope, $rootScope,
 	causesOfDeathFactory, salemTextColorFactory) {
+	/* Controls a list of reasons a player in the game was killed. Broadcasts
+	event data when user confirms the list. Listens for requests from other
+	controllers to appear to the user. Also listens for requests to broadcast
+	data for a hanging, restricting reliance on causesofDeathFactory. */
 	$scope.data = {
 		causesLoading: true,
 		causesError: false,
@@ -262,8 +367,6 @@ app.controller("autopsyCtrl", function ($scope, $rootScope,
 	});
 
 	$scope.$on('obviousSuicide', function (event, deceased) {
-		// Admittedly not exactly clean, but this allows
-		// every other controller to ignore causes of death.
 		var autopsy = {
 			player: deceased,
 			causes: [lynchCause]
@@ -272,55 +375,10 @@ app.controller("autopsyCtrl", function ($scope, $rootScope,
 	});
 });
 
-app.controller("playerRosterCtrl", function ($scope, $rootScope,
-	playerRosterFactory) {
-	$scope.data = {
-		playerRoster: playerRosterFactory,
-		graveyard: [],
-	};
-
-	var killPlayer = function (player) {
-		player.kill();
-		$scope.data.graveyard.push(player);
-	}
-
-	$scope.playerKilled = function(player) {
-		if (player == null) {
-			return;
-		}
-		$rootScope.$broadcast('autopsyStart', player);
-	}
-
-	$scope.playerAccused = function (player) {
-		if (player == null) {
-			return;
-		}
-		$rootScope.$broadcast('accusationStart', player);
-	}
-
-	$scope.playerQuit = function(player) {
-		player.leave();
-	}
-
-	$scope.playerRevived = function(player) {
-		if (player == null) {
-			return;
-		}
-		var index = $scope.data.graveyard.indexOf(player);
-		if (index > -1) {
-			player.revive();
-			$scope.data.graveyard.splice(index, 1);
-			$rootScope.$broadcast('revival', {player: player});
-		}
-	}
-
-	$scope.$on("autopsyConfirm", function(event, autopsy) {
-		killPlayer(autopsy.player)
-	});
-});
-
 app.controller('accusationCtrl', function($scope, $rootScope,
 	playerRosterFactory) {
+	/* Controls entry of the list of players who voted to put another player
+	on the stand. Listens for requests to begin and broadcasts results. */
 	$scope.data = {
 		accused: null,
 		players: [],
@@ -398,6 +456,8 @@ app.controller('accusationCtrl', function($scope, $rootScope,
 
 app.controller('trialCtrl', function($scope, $rootScope,
 	playerRosterFactory, juryService) {
+	/* Controls entry of the which players voted which way during a trial.
+	Listens for requests to begin and broadcasts results. */
 	$scope.data = {
 		choices: ['guilty', 'abstain', 'innocent'],
 		accused: null,
@@ -458,6 +518,9 @@ app.controller('trialCtrl', function($scope, $rootScope,
 
 app.controller('gameEventLogCtrl', function($scope, $rootScope,
 	salemClockFactory, gameEventProvider, gameEventLogFactory) {
+	/* Controls the log of all events occurring during the game. Listens for
+	broadcast events, and adds a timestamp (so other controllers can ignore
+	the clock), before creating and adding the event. */
 	var clock = salemClockFactory;
 	var eventLog = gameEventLogFactory;
 
@@ -492,6 +555,7 @@ app.controller('gameEventLogCtrl', function($scope, $rootScope,
 });
 
 app.controller('salemClockCtrl', function($scope, salemClockFactory) {
+	/* Clock clock clock clock clock. Hardly sounds like a word anymore. */
 	$scope.data = {
 		clock: salemClockFactory
 	};

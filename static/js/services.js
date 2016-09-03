@@ -1,11 +1,26 @@
 // Build static data for the Untitled Salem Tools App.
+/* 
+	Factories:
+		personasFactory
+		populationsFactory
+		playerFactory
+		playerRosterFactory
+		salemClockFactory
+		gameEventLogFactory
+		causesOfDeathFactory
+		salemTextColorFactory
+
+	Services:
+		juryService
+
+	Providers:
+		gameEventProvider */
 
 app = angular.module("salemApp");
 
-// Create various roles and alignments use to describe players and abilities
-// Return as a map so that the application can access a specific persona
-// by knowing its key instead of having to search a full list.
 app.factory('personasFactory', function($http) {
+	/* Create a map of persona objects for all roles and alignments, keyed by
+	string name. */
 	function Persona (personaData) {
 		this.name = personaData.name;
 		this.roleName = personaData.roleName || null;
@@ -61,12 +76,10 @@ app.factory('personasFactory', function($http) {
 		console.log(response);
 		return null;
 	});
-
-	// return personas;
 });
 
-// Create role populations used by various game modes
 app.factory('populationsFactory', function($http, personasFactory) {
+	/* Return a map of game mode names to the list of personas they comprise. */
 	var personas = null; // Filled by promise later
 
 	var buildPopulations = function (gameModeData) {
@@ -102,6 +115,8 @@ app.factory('populationsFactory', function($http, personasFactory) {
 });
 
 app.factory('playerFactory', function() {
+	/* Return a simple constructor for a player object. */
+	// Yes, this should be a service. Maybe later!
 	return function(name, number) {
 		this.name = name;
 		this.number = number;
@@ -123,6 +138,7 @@ app.factory('playerFactory', function() {
 });
 
 app.factory('playerRosterFactory', function(playerFactory) {
+	/* Return a list of 15 player objects. */
 	var playerRoster = [];
 	for (var i = 0; i < 15; i++) {
 		var playerNumber = i+1;
@@ -134,6 +150,7 @@ app.factory('playerRosterFactory', function(playerFactory) {
 });
 
 app.factory('salemClockFactory', function() {
+	/* Return a clock object for day and night phases and numbers. */
 	return {
 		phase: 'Day',
 		number: 1,
@@ -179,6 +196,10 @@ app.factory('salemClockFactory', function() {
 });
 
 app.provider('gameEventProvider', function() {
+	/* Exposes a registration function for configuration that allows creating
+	custom game event types with arbitrary properties and methods.
+	Also exposes a create function to module that will build an object of the
+	requested type using its registration information. */
 	var factories = {};
 
 	this.registerType = function(eventType, dataProperties, otherObj) {
@@ -216,6 +237,7 @@ app.provider('gameEventProvider', function() {
 });
 
 app.factory('gameEventLogFactory', function() {
+	/* A very simple log object. */
 	var eventLog = {
 		entries: [],
 		log: function(gameEvent) {
@@ -226,7 +248,7 @@ app.factory('gameEventLogFactory', function() {
 });
 
 app.factory('causesOfDeathFactory', function($http) {
-
+	/* Expose information for each way a player can be rendered deceased. */
 	var buildCauses = function (data) {
 		var causes = [];
 		for (var i = 0; i < data.length; i++) {
@@ -250,6 +272,8 @@ app.factory('causesOfDeathFactory', function($http) {
 });
 
 app.factory('salemTextColorFactory', function(personasFactory) {
+	/* A function for determining the appropriate color class to use for any
+	object that might have team or roleName properties. */
 	var colorFunction = function(data) {
 		if (personas == null || data == null) {
 			return;
@@ -295,6 +319,7 @@ app.factory('salemTextColorFactory', function(personasFactory) {
 });
 
 app.service('juryService', function (playerRosterFactory) {
+	/* A service for managing jury members and their votes during a trial. */
 	this.clear = function () {
 		this.players = [];
 		this.votes = {

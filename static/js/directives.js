@@ -1,8 +1,16 @@
 // Directives for the Untitled Salem Tools App.
+/* Directives:
+	gameEvent
+	jplToggle
+	jplFocus
+	modalBlock */
 
 app = angular.module("salemApp");
 
 app.directive('gameEvent', function() {
+	/* Element directive built around a GameEvent object, with a summary()
+	method and possibly a details() method. Includes an expand/hide feature if
+	the details method is defined and its return is non-empty.*/
 	return {
 		restrict: 'E',
 		replace: true,
@@ -25,7 +33,7 @@ app.directive('gameEvent', function() {
 				"<span ng-if='hasDetails' ng-click='toggleDetails()'" +
 					"ng-class=chevronDir()>" +
 				"</span>" +
-				"<span class='event-string' ng-bind-html='event.toString()|salemifyText'></span>" +
+				"<span class='event-string' ng-bind-html='event.summary()|salemifyText'></span>" +
 				"<ul name='event-details' ng-show='showDetails'>" +
 					"<li name='event-detail-item' ng-repeat='detail in event.details()'" +
 						"<p ng-bind-html='detail|salemifyText'></p>" +
@@ -36,6 +44,9 @@ app.directive('gameEvent', function() {
 });
 
 app.directive('jplToggle', function() {
+	/* Directive that manages multiple attributes which map to a binary state:
+	The property describing the state, element text, and css classes.
+	Also supports triggering a function call on toggle. */
 	// Does not play nicely with:
 	// ng-click: Use toggle-action to achieve a similar effect.
 	//           toggle-action is guaranteed to execute AFTER
@@ -92,6 +103,8 @@ app.directive('jplToggle', function() {
 });
 
 app.directive('jplFocus', function($timeout) {
+	/* Directive applicable to an element. That element will receive focused
+	when the specified property matches the specified value. */
 	return {
 		link: function (scope, elem, attrs) {
 			var prop = attrs['focusWatchProperty'];
@@ -129,6 +142,8 @@ app.directive('jplFocus', function($timeout) {
 // template spaced out
 // removed closing tag (leaving responsibility for dismissal to controller)
 app.directive('modalBlock', function() {
+	/* Directive element that appears as a modal box on top of the viewport.
+	Clicking outside the modal hides it, but this can be disabled. */
 	return {
 		restrict: 'E',
 		scope: {
