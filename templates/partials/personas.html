@@ -1,0 +1,39 @@
+<div ng-controller="personasCtrl" class="panel">
+	<div class="panel--button-row">
+		<div ng-class="'panel--button ' +
+			'panel--button__triple ' +
+			'panel--button__' +
+			(val == data.selectedTeam ? 'pressed salem-text--' + val.toLowerCase() : 'unpressed')"
+			ng-repeat="val in data.teamValues"
+			ng-click="updateSelectedTeam(val)">
+			{[val]}
+		</div>
+	</div>
+	<div class="panel--button-row">
+		<div ng-class="'panel--button ' +
+			'panel--button__double ' +
+			'panel--button__' +
+			(val == data.selectedSpecificity ? 'pressed' : 'unpressed')"
+			ng-repeat="val in data.specificityValues"
+			ng-click="updateSelectedSpecificity(val)">
+			{[val]}
+		</div>
+	</div>
+	<div ng-if="data.personasLoading"
+		class="panel--button panel--button__single
+			fa fa-spinner fa-spin fa-3x">
+	</div>
+	<p ng-if="data.personasError">
+		Failed to retrieve data. Try refreshing the page, or failing that, rolling on the floor	and crying.
+	</p>
+	<ul class="persona-list"
+		ng-if="data.personas">
+		<li ng-repeat="persona in data.personas.values()|iterToArray|specOnly:data.selectedSpecificity|teamOnly:data.selectedTeam">
+			<p ng-bind-html='persona.name|salemifyText'></p>
+			<button ng-if="showAddToCustomButton"
+				ng-click="addToCustom(persona)">
+				Add to Custom Game
+			</button>
+		</li>
+	</ul>
+</div>

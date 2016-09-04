@@ -284,3 +284,23 @@ ul.event-log {
 /*******************
 	END Modal styles
 *******************/
+
+
+/**********************
+	BEGIN Footer styles
+**********************/
+body {
+	margin-bottom: 25px;
+}
+
+#footer {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	height: 25px;
+	background-color: bisque;
+	text-align: center;
+}
+/********************
+	END Footer styles
+********************/

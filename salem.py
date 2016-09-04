@@ -8,7 +8,23 @@ app = flask.Flask(__name__)
 
 @app.route('/', methods = ['GET'])
 def main():
-	return flask.render_template('salem.html')
+	return flask.render_template('index.html')
+
+@app.route('/thanks', methods = ['GET'])
+def thanks():
+	return flask.render_template('thanks.html')
+
+@app.route('/about', methods = ['GET'])
+def about():
+	return flask.render_template('about.html')
+
+@app.route('/docs', methods = ['GET'])
+def docs():
+	return flask.render_template('docs.html')
+
+@app.route('/contact', methods = ['GET'])
+def contact():
+	return flask.render_template('contact.html')
 
 @app.route('/api/<resource>', methods = ['GET'])
 def get_static_data(resource):

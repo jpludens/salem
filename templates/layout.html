@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Salem's Little Helper</title>
+	<link rel="stylesheet"
+		href="{{ url_for('static', filename='css/salem.css') }}">
+	<link rel="stylesheet"
+		href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/angular.js') }}">
+	</script>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/angular-sanitize.js') }}">
+	</script>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/salemApp.js') }}">
+	</script>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/filters.js') }}">
+	</script>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/services.js') }}">
+	</script>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='js/directives.js') }}">
+	</script>
+</head>
+{% block body %}
+{% endblock %}
+<footer id='footer'>
+	<a href="/">Main</a>
+	---
+	<a href="/thanks">Thanks!</a>
+	---
+	<a href="/about">About</a>
+	---
+	<a href="/docs">How It Works</a>
+	---
+	<a href="/contact">Contact</a>
+</footer>
+</html>
+

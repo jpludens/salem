@@ -1,0 +1,23 @@
+<div ng-controller="autopsyCtrl">
+	<modal-block id="causes-of-death-selection"
+		show="data.show" width="620px" height="60%">
+		<h3>Select the cause(s) of {[data.victimName]}'s' death</h3>
+		<button
+			ng-if="data.causesOfDeath"
+			ng-repeat="cause in data.causesOfDeath"
+			ng-class="'fa fa-' + cause.iconName + ' ' +
+				(isSelected(cause) ? data.getColor(cause) :
+				'salem-text--executioner')"
+			ng-click="toggleCause(cause)">
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="confirm()"
+			ng-disabled="data.selectedCauses.length == 0">
+			He's dead, Jim! (Confirm)
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="close()">
+			He got better! (Cancel)
+		</button>
+	</modal-block>
+</div>

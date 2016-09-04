@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block body %}
+<body ng-app="salemApp">
+	<div class="panel-group">
+		{% include 'partials/personas.html' %}
+		{% include 'partials/populations.html' %}
+		{% include 'partials/player_roster.html' %}
+		{% include 'partials/clock.html' %}
+		{% include 'partials/event_log.html' %}
+		{% include 'partials/autopsy.html' %}
+		{% include 'partials/accusation.html' %}
+		{% include 'partials/trial.html' %}
+	</div>
+</body>
+{% endblock %}

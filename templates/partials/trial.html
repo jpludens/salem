@@ -1,0 +1,34 @@
+<div ng-controller="trialCtrl">
+	<modal-block id="trialPanel"
+		show="data.show" width="600px" height="80%"
+		no-hide="true">
+		<h3>{[data.accused.name]} has been tried and judged.</h3>
+		<div ng-repeat="player in data.jury.players">
+			<button
+				ng-repeat="choice in data.choices"
+				ng-click="data.jury.setVote(player, choice)"
+				class="vote-button"
+				ng-class="data.jury.checkVote(player) == choice ? ('vote-button--selected salem-text--' + choice) : ''">
+				{[choice]}
+			</button>
+			<span class="player-list-number">
+				{[(player.number)|padNumberText:2]}
+			</span>
+			<span class="player-name">
+				{[player.name]}
+			</span>
+		</div>
+		<button class="panel--button panel--button__single"
+			ng-click="confirmAndLogVotes()">
+			Confirm (Log Votes)
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="confirmAndSkipVotes('innocent')">
+			Innocent (Skip Votes)
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="confirmAndSkipVotes('guilty')">
+			Guilty (Skip Votes)
+		</button>
+	</modal-block>
+</div>

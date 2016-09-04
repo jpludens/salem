@@ -1,0 +1,32 @@
+<div ng-controller="accusationCtrl">
+	<modal-block id="accusationPanel"
+		show="data.show" width="600px" height="80%">
+		<h3>{[data.accused.name]} has some explaining to do...</h3>
+		<div ng-repeat="player in data.players">
+			<button
+				class="vote-button"
+				ng-click="toggleVote(player)""
+				ng-class="isVoting(player) ? 'vote-button--accusing' : ''">
+				Accusing
+			</button>
+			<span class="player-list-number">
+				{[(player.number)|padNumberText:2]}
+			</span>
+			<span class="player-name">
+				{[player.name]}
+			</span>
+		</div>
+		<button class="panel--button panel--button__single"
+			ng-click="confirmAndLogVotes()">
+			Confirm (Log Votes)
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="confirmAndSkipVotes()">
+			Confirm (Skip Votes)
+		</button>
+		<button class="panel--button panel--button__single"
+			ng-click="close()">
+			Cancel
+		</button>
+	</modal-block>
+</div>

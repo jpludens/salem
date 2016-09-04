@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block body %}
+<body class="wall-of-text">
+	<h1>How It Works</h1>
+	Salem's Little Helper aims to be self-explanatory. It will probably miss the mark. If this page was particularly helpful, or particularly not, <a href="/contact">your feedback</a> will be taken into account for future improvements.
+	<h3>The Player List</h3>
+	<p>
+		Right now, all the action happens here.</br>
+		Click Edit Names to start typing everyone's silly Salem names so you can identify them.</br>
+		When a player dies overnight, click their "Killed" button to open a window where you can specify one or more causes of death. Dead players remain visible, just slightly less so. <b>This  means you can connect names and numbers of dead players</b>, useful when a will contains lots of numbers but no names.</br>
+		When a player is voted to the stand, click their "Accused" button to a open a window where you can optionally choose all the players who voted the accused to the stand. Confirm the accusation to go to a second window, where you can optionally enter the Town's votes for the trial itself. These windows all offer "Skip Votes" options, which can save time if you aren't interested in remembering who voted which way. Note that any Guilty verdict will handle "killing" the accused for you.
+	</p>
+	<h3>The Graveyard</h3>
+	<p>
+		Please be respectful when visiting the Graveyard. Please be careful and only click the "Revive" button when a corpse is revived by a Retributionist. Please do not leave flowers in the Graveyard, as this makes the Janitor very upset and he gets more than a little stabby.
+	</p>
+	<h3>Salem Clock</h3>
+	<p>
+		Click "Spring Forward" to advance the clock forward one phase. Click "Fall Back" if you accidentally advance too far.
+	</p>
+	<h3>Game Event Log</h3>
+	<p>
+		As players are tried, killed, and revived, the Event Log will be filled automatically. Every event is summarized in a single line, but might have additional information to view/hide by clicking the arrow left of the summary. Right now, there's nothing here you can't see in the in-game chatlog. But since <b>you can see events here without scrolling through the game's chatlog</b>, you can involved stay in the conversation while you review the history of the game.
+	</p>
+</body>
+{% endblock %}
