@@ -5,9 +5,13 @@
 .panel {
 	background-color: beige;
 	width: 480px;
-	display: inline-block;
 	vertical-align: top;
-	padding-right: 10px;
+	padding: 5px;
+	margin: 5px;
+}
+
+.panel-group {
+	display: flex;
 }
 
 h2.panel--header {
@@ -75,13 +79,6 @@ ul.persona-list li button {
 	margin-left: 8px;
 }
 
-/* Persona names are linked to the relevant wiki page,
-but it is preferred they don't appear as links. */
-ul.persona-list a {
-	color: inherit;
-	text-decoration: inherit;
-}
-
 /**************************
 	END Persona list styles
 **************************/
@@ -115,7 +112,6 @@ ul.player-list {
 /*************************
 	BEGIN Event Log styles
 *************************/
-
 ul.event-log {
 	list-style-type: none;
 }
@@ -134,10 +130,17 @@ ul.event-log {
 ****************************/
 
 .clock-control {
-	display: inline-block;
+	text-align: center;
 }
 .clock-control p {
-	display: inline;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+}
+.clock-control button {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /**************************
@@ -207,17 +210,6 @@ ul.event-log {
 }
 .salem-text--abstain {
 	color: #66CCFF;
-}
-
-.vote-button {
-	text-transform: capitalize;
-}
-.vote-button--selected {
-	font-weight: bold;
-}
-.vote-button--accusing {
-	font-weight: bold;
-	color: darkgreen;
 }
 /**********************************
 	END Salem color and font styles

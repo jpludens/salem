@@ -1,5 +1,5 @@
 <div ng-controller="playerRosterCtrl" id="player-roster" class="panel">
-	<h2 class="panel--header">Player List</h2>
+	<h2 class="panel--header">Players</h2>
 	<button class="panel--button panel--button__single"
 		jpl-toggle toggle-state="editAllNamesMode"
 		off-text="Edit All Names" on-text="Done Editing">
@@ -38,9 +38,7 @@
 	<h2 class="panel--header">Graveyard</h2>
 	<ul class="player-list">
 		<li ng-repeat="player in data.graveyard">
-			<button class="fa fa-refresh"
-				ng-click="playerRevived(player)">
-			</button>
+			<button ng-click="playerRevived(player)">Revive</button>
 			<span class="player-list-number">
 				{[player.number|padNumberText:2]}
 			</span>

@@ -1,8 +1,10 @@
-<div ng-controller="salemClockCtrl" class="panel">
-	<h2 class="panel--header">Salem Clock</h2>
+<div ng-controller="salemClockCtrl" class="panel" id="clock">
+	<h2 class="panel--header">Clock</h2>
 	<div class="clock-control">
-		<button ng-click="data.clock.recede()">Fall Back</button>
-		<p>{[data.clock.toString()]}</p>
-		<button ng-click="data.clock.advance()">Spring Forward</button>
+		<div class="clock-center">
+			<button ng-click="data.clock.recede()">Fall Back</button>
+			<p>{[data.clock.toString()]}</p>
+			<button ng-click="data.clock.advance()">Spring Forward</button>
+		</div>
 	</div>
 </div>
