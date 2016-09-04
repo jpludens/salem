@@ -237,6 +237,7 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope,
 	$scope.data = {
 		playerRoster: playerRosterFactory,
 		graveyard: [],
+		mayorRevealed: false
 	};
 
 	var killPlayer = function (player) {
@@ -272,6 +273,11 @@ app.controller("playerRosterCtrl", function ($scope, $rootScope,
 			$scope.data.graveyard.splice(index, 1);
 			$rootScope.$broadcast('revival', {player: player});
 		}
+	}
+
+	$scope.playerMayor = function(player) {
+		player.isMayor = !player.isMayor;
+		$scope.data.mayorRevealed = !$scope.data.mayorRevealed;
 	}
 
 	$scope.$on("autopsyConfirm", function(event, autopsy) {
@@ -481,18 +487,9 @@ app.controller('trialCtrl', function($scope, $rootScope,
 	}
 
 	$scope.confirmAndLogVotes = function () {
-		console.log($scope.data.jury);
-		if ($scope.data.jury.votes.guilty.length >
-			$scope.data.jury.votes.innocent.length) {
-			var verdict = 'guilty';
-		}
-		else {
-			var verdict = 'innocent';
-		}
-
 		var trial = {
 			accused: $scope.data.accused,
-			verdict: verdict,
+			verdict: $scope.data.jury.getVerdict(),
 			tally: $scope.data.jury.getTally()
 		};
 		$rootScope.$broadcast('trialConfirm', trial);

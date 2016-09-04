@@ -6,6 +6,11 @@
 	</button>
 	<ul class="player-list">
 		<li ng-repeat="player in data.playerRoster">
+			<button ng-click='playerMayor(player)'
+				ng-class="player.isMayor ? 'mayor-button--revealed' : ''"
+				ng-disabled='data.mayorRevealed && !player.isMayor'>
+				Mayor
+			</button>
 			<button ng-click='playerKilled(player)'
 				ng-disabled='!player.alive'>
 				Killed

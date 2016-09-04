@@ -229,6 +229,10 @@ ul.event-log {
 	font-weight: bold;
 	color: darkgreen;
 }
+.mayor-button--revealed {
+	font-weight: bold;
+	color: peru;
+}
 /*************************
 	END Vote button styles
 *************************/

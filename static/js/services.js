@@ -122,6 +122,7 @@ app.factory('playerFactory', function() {
 		this.number = number;
 		this.present = true;
 		this.alive = true;
+		this.isMayor = false;
 
 		this.kill = function () {
 			this.alive = false;
@@ -381,5 +382,22 @@ app.service('juryService', function (playerRosterFactory) {
 			return a.player.number - b.player.number;
 		});
 		return tally;
+	}
+
+	this.getVerdict = function() {
+		var guiltyCount = 0;
+		var innocentCount = 0;
+		for (var i = 0; i < this.votes.guilty.length; i++) {
+			guiltyCount += this.votes.guilty[i].isMayor ? 3 : 1;
+		}
+		for (var i = 0; i < this.votes.innocent.length; i++) {
+			innocentCount += this.votes.innocent[i].isMayor ? 3 : 1;
+		}
+		if (guiltyCount > innocentCount) {
+			return 'guilty';
+		}
+		else {
+			return 'innocent';
+		}
 	}
 });
